@@ -2,26 +2,31 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
-const useUserStore = defineStore('users',() => {
+const useUserStore = defineStore('users', () => {
   const currentUser = ref(null)
   const userError = ref(null)
 
   async function login(user) {
-      await axios.postForm('http://localhost:3000/api/user/auth',  {
-        login: user.login,
-        password: user.password
-      }, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Accept': 'text/plain',
-        }
+    await axios
+      .postForm(
+        'http://localhost:3000/api/user/auth',
+        {
+          login: user.login,
+          password: user.password,
+        },
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Accept: 'text/plain',
+          },
+        },
+      )
+      .then((res) => {
+        currentUser.value = res.data
       })
-        .then(res => {
-          currentUser.value = res.data
-        })
-        .catch(err => {
-          userError.value = err.response.data
-        })
+      .catch((err) => {
+        userError.value = err.response.data
+      })
   }
 
   async function register(user) {
@@ -40,8 +45,7 @@ const useUserStore = defineStore('users',() => {
     })
   }
 
-
-  return {currentUser, userError, login, register}
+  return { currentUser, userError, login, register }
 })
 
 export default useUserStore
