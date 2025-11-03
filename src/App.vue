@@ -1,7 +1,10 @@
 <script setup></script>
 
 <template>
-  <div></div>
+  <div>
+    <header-top />
+    <router-view />
+  </div>
 </template>
 
 <style scoped></style>
