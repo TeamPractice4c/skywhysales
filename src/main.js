@@ -7,6 +7,7 @@ import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 import SignInModal from '@/components/sign-in-modal.vue'
 import AppHeader from '@/components/app-header.vue'
+import AppFooter from '@/components/app-footer.vue'
 
 const toastOptions = {
   transition: 'Vue-Toastification__fade',
@@ -23,6 +24,7 @@ const toastOptions = {
 const app = createApp(App).use(createPinia()).use(router).use(Toast, toastOptions)
 
 app.component('sign-in', SignInModal)
-app.component('header-top', AppHeader)
+app.component('app-header', AppHeader)
+app.component('app-footer', AppFooter)
 
 app.mount('#app')
