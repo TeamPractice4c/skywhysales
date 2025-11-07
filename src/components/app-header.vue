@@ -1,13 +1,20 @@
 <script setup>
 import useUserStore from '@/stores/user.js'
 import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 const store = useUserStore()
+const router = useRouter()
+const route = useRoute()
 
 const showAuth = ref(false)
 
 const closeModal = () => {
   showAuth.value = false
+}
+
+const signUp = () => {
+  router.push({ name: 'SignUp' })
 }
 </script>
 
@@ -21,7 +28,15 @@ const closeModal = () => {
       <p class="action" v-if="store.currentUser">Мои рейсы</p>
       <p class="action" v-else @click="showAuth = true">Войти</p>
       <p class="action" v-if="store.currentUser">Мой аккаунт</p>
-      <button type="button" class="action action-btn" v-else>Зарегистрироваться</button>
+      <button
+        type="button"
+        class="action action-btn"
+        v-else
+        v-if="route.name !== 'SignUp'"
+        @click="signUp"
+      >
+        Зарегистрироваться
+      </button>
     </div>
     <teleport to="body">
       <sign-in ref="modal" :show="showAuth" @close="closeModal"></sign-in>

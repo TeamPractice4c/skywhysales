@@ -32,30 +32,33 @@ const useUserStore = defineStore('users', () => {
 
   async function register(user) {
     await axios
-      .post('http://localhost:3000/api/user/register', {
-        uId: 0,
-        uSurname: user.surname,
-        uName: user.name,
-        uPatronymic: user.patronymic,
-        uEmail: user.email,
-        uPassword: user.password,
-        uRole: '',
-        uPhone: user.phone,
-        uBirthdate: user.birthdate,
-        uPassportSerial: user.passportSerial,
-        uPassportNumber: user.passportNumber,
+      .postForm('http://localhost:3000/api/User/Register', {
+        UId: 0,
+        USurname: user.surname,
+        UName: user.name,
+        UPatronymic: user.patronymic,
+        UEmail: user.login,
+        UPassword: user.password,
+        URole: '',
+        UPhone: user.phone,
+        UBirthdate: user.birthdate,
+        UPassportSerial: user.serial,
+        UPassportNumber: user.number,
       })
       .then((res) => {
         currentUser.value = res.data
       })
       .catch((err) => {
         userError.value = err.response.data
+        if (err.response?.data?.errors) {
+          console.log('Validation errors:', err.response.data.errors)
+        }
       })
   }
 
   async function getUsers() {
     await axios
-      .get('/http://localhost:3000/api/users/GetUsers')
+      .get('http://localhost:3000/api/User/GetUsers')
       .then((res) => {
         usersList.value = Object.keys(res.data).map(key => {
           return {
@@ -68,7 +71,7 @@ const useUserStore = defineStore('users', () => {
 
   async function getUser(userId) {
     await axios
-      .get(`/http://localhost:3000/api/users/GetUser/${userId}`)
+      .get(`http://localhost:3000/api/User/GetUser/${userId}`)
       .then((res) => {
         return res.data
       })
@@ -78,7 +81,7 @@ const useUserStore = defineStore('users', () => {
   }
 
   async function editUser(user) {
-    await axios.post('http://localhost:3000/api/user/edit', user)
+    await axios.post('http://localhost:3000/api/User/EditUser', user)
     .then((res) => {
       if (currentUser.value && currentUser.value.uRole !== 'Менеджер') {
         currentUser.value = res.data
@@ -98,7 +101,7 @@ const useUserStore = defineStore('users', () => {
       return
     }
     await axios
-      .delete(`http://localhost:3000/api/user/DeleteUser/${userId}`)
+      .delete(`http://localhost:3000/api/User/DeleteUser/${userId}`)
       .then(() => {
         const index = usersList.value.findIndex((u) => u.uId === userId)
         if (index > -1) {

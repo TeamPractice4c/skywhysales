@@ -91,9 +91,10 @@ input::-webkit-calendar-picker-indicator {
   justify-content: center;
   background-image: url(../assets/images/mainbg.png);
   width: 100vw;
-  height: 50vh;
+  height: 100vh;
+  background-size: contain;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-position: center;
 }
 
 .slogan {

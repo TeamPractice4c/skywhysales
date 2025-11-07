@@ -1,4 +1,5 @@
-<script setup></script>
+<script setup>
+</script>
 
 <template>
   <div class="footer">
@@ -46,6 +47,6 @@ p {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 120px 60px;
+  padding: 60px;
 }
 </style>

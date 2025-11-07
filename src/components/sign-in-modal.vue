@@ -2,9 +2,11 @@
 import { ref, useTemplateRef } from 'vue'
 import useUserStore from '@/stores/user.js'
 import { useToast } from 'vue-toastification'
+import { useRoute, useRouter } from 'vue-router'
 
 const toast = useToast()
-
+const router = useRouter()
+const route = useRoute()
 const store = useUserStore()
 
 defineProps({
@@ -43,9 +45,7 @@ const signIn = async () => {
 }
 
 const signUp = () => {
-  // isAuth.value = false
-  // emit('close')
-  toast.info('WIP...')
+  router.push({ name: 'SignUp' })
 }
 </script>
 
@@ -66,12 +66,14 @@ const signUp = () => {
           />
         </svg>
       </div>
-      <h3 style="align-self: center">Авторизация</h3>
+      <h3 style="align-self: center">Вход</h3>
       <input type="text" placeholder="Введите email" ref="login-input" />
       <input type="password" placeholder="Введите пароль" ref="password-input" />
       <div class="actions">
         <button type="button" class="modal-btn" @click="signIn">Войти</button>
-        <p @click="signUp">Нет аккаунта? <span>Зарегистрироваться</span></p>
+        <p v-if="route.name !== 'SignUp'" @click="signUp">
+          Нет аккаунта? <span>Зарегистрироваться</span>
+        </p>
       </div>
     </div>
   </div>
