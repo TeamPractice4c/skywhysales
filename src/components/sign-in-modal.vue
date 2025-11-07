@@ -91,6 +91,8 @@ const signUp = () => {
   background-color: #605dec;
   transition: 0.5s;
   padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 4px;
   color: #fafafa;
 }
 .modal-btn:hover {
@@ -108,7 +110,7 @@ const signUp = () => {
   width: 30%;
   padding: 1rem;
   background: #fff;
-  z-index: 1;
+  z-index: 100;
   left: 50%;
   border-radius: 10px;
   transform: translateX(-50%);
@@ -131,7 +133,7 @@ input {
   display: block;
   color: #7c8db0;
   padding: 0.5rem 1.5rem;
-  border-radius: 10px;
+  border-radius: 4px;
   font-size: 1rem;
   resize: none;
 }
