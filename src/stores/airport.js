@@ -74,6 +74,9 @@ const useAirportStore = defineStore('airport', () => {
         airportsList.value.slice(index, 1)
       }
     })
+      .catch((err) => {
+        airportError.value = err.response.data
+      })
   }
 
   return {

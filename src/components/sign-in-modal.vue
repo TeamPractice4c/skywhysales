@@ -153,6 +153,10 @@ svg:hover {
   color: #7c8db0;
 }
 
+.actions p:hover {
+  cursor: pointer;
+}
+
 .close {
   align-self: flex-end;
 }
