@@ -11,7 +11,6 @@ import AppFooter from '@/components/app-footer.vue'
 import { VueDatePicker } from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 
-
 const toastOptions = {
   transition: 'Vue-Toastification__fade',
   maxToasts: 1,
@@ -29,7 +28,6 @@ const app = createApp(App).use(createPinia()).use(router).use(Toast, toastOption
 app.component('sign-in', SignInModal)
 app.component('app-header', AppHeader)
 app.component('app-footer', AppFooter)
-app.component('date-picker', VueDatePicker);
-
+app.component('date-picker', VueDatePicker)
 
 app.mount('#app')

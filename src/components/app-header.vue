@@ -17,8 +17,8 @@ const closeModal = () => {
       <img style="justify-self: flex-start" src="../assets/icons/logo.svg" alt="" />
     </router-link>
     <div class="header-actions">
-      <p class="action">Полеты</p>
-      <p class="action" v-if="store.currentUser">Мои полеты</p>
+      <p class="action">Рейсы</p>
+      <p class="action" v-if="store.currentUser">Мои рейсы</p>
       <p class="action" v-else @click="showAuth = true">Войти</p>
       <p class="action" v-if="store.currentUser">Мой аккаунт</p>
       <button type="button" class="action action-btn" v-else>Зарегистрироваться</button>
@@ -37,6 +37,7 @@ const closeModal = () => {
 
 * {
   font-family: 'Nunito-sans', sans-serif;
+  font-size: 16px;
 }
 .header {
   display: flex;

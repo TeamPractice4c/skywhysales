@@ -71,7 +71,7 @@ const signUp = () => {
       <input type="password" placeholder="Введите пароль" ref="password-input" />
       <div class="actions">
         <button type="button" class="modal-btn" @click="signIn">Войти</button>
-        <button type="button" class="modal-btn" @click="signUp">Зарегистрироваться</button>
+        <p @click="signUp">Нет аккаунта? <span>Зарегистрироваться</span></p>
       </div>
     </div>
   </div>
@@ -146,6 +146,11 @@ svg:hover {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.actions p {
+  text-align: center;
+  color: #7c8db0;
 }
 
 .close {
