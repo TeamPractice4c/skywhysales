@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import axios from 'axios'
 
-const useAirportStore = defineStore('airport', () => {
+const useAirportStore = defineStore('airports', () => {
   const currentAirport = ref(null)
   const airportError = ref(null)
   const airportsList = ref([])

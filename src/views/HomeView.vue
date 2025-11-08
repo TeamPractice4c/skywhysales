@@ -1,7 +1,59 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, useTemplateRef } from 'vue'
+import { useToast } from 'vue-toastification'
+import { useRouter } from 'vue-router'
+
+const toast = useToast()
+
+const router = useRouter()
 
 const dates = ref()
+const fromInput = useTemplateRef('from-input')
+const toInput = useTemplateRef('to-input')
+
+/*const searchFlights = () => {
+  const from = fromInput.value
+  const to = toInput.value
+
+  if (!from.value || !to.value || !dates.value) {
+    toast.error('Заполните все поля')
+  }
+
+  if (!dates.value) {
+    toast.error('Выберите сроки')
+    return
+  }
+  const startDate = dates.value[0]
+  const endDate = dates.value[1]
+
+  if (from.value === to.value) {
+    toast.error('Страна отправления и страна прибытия не могут быть одинаковы')
+    return
+  }
+
+  if (!endDate) {
+    toast.error('Выберите дату прибытия')
+    return
+  }
+
+  if (startDate === endDate) {
+    toast.error('Сроки не могут быть одинаковы')
+    return
+  }
+
+  const searchProps = {
+    countryFrom: from.value,
+    countryTo: to.value,
+    startDate: startDate,
+    endDate: endDate,
+  }
+
+  router.push({
+    name: 'AllFlights', params: {
+      searchParams: searchProps,
+    }
+  })
+}*/
 </script>
 
 <template>
@@ -9,8 +61,8 @@ const dates = ref()
     <div class="search">
       <h1 class="slogan"><span>Больше чем</span> <br /><span>простая поездка</span></h1>
       <div class="search-options">
-        <input list="countries" name="departure" id="departure" placeholder="Откуда?" />
-        <input list="countries" name="arrival" id="arrival" placeholder="Куда?" />
+        <input list="countries" name="departure" id="departure" placeholder="Откуда?" ref="from-input" />
+        <input list="countries" name="arrival" id="arrival" placeholder="Куда?" ref="to-input" />
         <date-picker
           v-model="dates"
           class="datepicker"
@@ -18,9 +70,10 @@ const dates = ref()
           id="dates"
           range
           :time-config="{ enableTimePicker: false }"
+          :min-date="Date.now()"
           placeholder="Сроки полета"
         />
-        <button>Найти</button>
+        <button type="button">Найти</button>
         <datalist id="countries">
           <option value="Азербайджан" />
           <option value="Алжир" />

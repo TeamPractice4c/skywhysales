@@ -46,6 +46,8 @@ const signIn = async () => {
 
 const signUp = () => {
   router.push({ name: 'SignUp' })
+  emit('close')
+  isAuth.value = false
 }
 </script>
 

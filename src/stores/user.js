@@ -47,6 +47,7 @@ const useUserStore = defineStore('users', () => {
       })
       .then((res) => {
         currentUser.value = res.data
+        userError.value = null
       })
       .catch((err) => {
         userError.value = err.response.data
@@ -93,6 +94,9 @@ const useUserStore = defineStore('users', () => {
         }
       }
     })
+      .catch((err) => {
+        userError.value = err.response.data
+      })
   }
 
   async function deleteUser(userId) {

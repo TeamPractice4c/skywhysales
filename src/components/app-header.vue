@@ -16,6 +16,21 @@ const closeModal = () => {
 const signUp = () => {
   router.push({ name: 'SignUp' })
 }
+
+/*const goToFlights = () => {
+  router.push({
+    name: 'Flights',
+  })
+}*/
+
+const goToUser = () => {
+  router.push({
+    name: 'User',
+    params: {
+      id: store.currentUser.uId,
+    }
+  })
+}
 </script>
 
 <template>
@@ -24,10 +39,12 @@ const signUp = () => {
       <img style="justify-self: flex-start" src="../assets/icons/logo.svg" alt="" />
     </router-link>
     <div class="header-actions">
-      <p class="action">Рейсы</p>
+      <p class="action" :class="{ active: route.name === 'Flights' }">
+        Рейсы
+      </p>
       <p class="action" v-if="store.currentUser">Мои рейсы</p>
       <p class="action" v-else @click="showAuth = true">Войти</p>
-      <p class="action" v-if="store.currentUser">Мой аккаунт</p>
+      <p class="action" v-if="store.currentUser" @click="goToUser" :class="{ active: route.name === 'User'}">Мой аккаунт</p>
       <button
         type="button"
         class="action action-btn"
@@ -80,5 +97,9 @@ const signUp = () => {
   color: #fafafa;
   border: none;
   border-radius: 4px;
+}
+
+.active {
+  color: #605dec;
 }
 </style>
