@@ -68,12 +68,14 @@ const useAirportStore = defineStore('airport', () => {
   }
 
   const deleteAirport = async (airportId) => {
-    await axios.delete(`http://localhost:3000/api/airport/DeleteAirport/${airportId}`).then(() => {
-      const index = airportsList.value.findIndex((ap) => ap.apId === airportId)
-      if (index > -1) {
-        airportsList.value.slice(index, 1)
-      }
-    })
+    await axios
+      .delete(`http://localhost:3000/api/airport/DeleteAirport/${airportId}`)
+      .then(() => {
+        const index = airportsList.value.findIndex((ap) => ap.apId === airportId)
+        if (index > -1) {
+          airportsList.value.slice(index, 1)
+        }
+      })
       .catch((err) => {
         airportError.value = err.response.data
       })

@@ -32,18 +32,18 @@ const useUserStore = defineStore('users', () => {
 
   async function register(user) {
     await axios
-      .postForm('http://localhost:3000/api/User/Register', {
-        UId: 0,
-        USurname: user.surname,
-        UName: user.name,
-        UPatronymic: user.patronymic,
-        UEmail: user.login,
-        UPassword: user.password,
-        URole: '',
-        UPhone: user.phone,
-        UBirthdate: user.birthdate,
-        UPassportSerial: user.serial,
-        UPassportNumber: user.number,
+      .post('http://localhost:3000/api/User/Register', {
+        uId: 0,
+        uSurname: user.surname,
+        uName: user.name,
+        uPatronymic: user.patronymic,
+        uEmail: user.login,
+        uPassword: user.password,
+        uRole: '',
+        uPhone: user.phone,
+        uBirthdate: user.birthdate,
+        uPassportSerial: user.serial,
+        uPassportNumber: user.number,
       })
       .then((res) => {
         currentUser.value = res.data

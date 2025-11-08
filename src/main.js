@@ -13,7 +13,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 
 const toastOptions = {
   transition: 'Vue-Toastification__fade',
-  maxToasts: 1,
+  maxToasts: 3,
   newestOnTop: true,
   filterBeforeCreate: (toast, toasts) => {
     if (toasts.filter((t) => t.type === toast.type).length !== 0) {
