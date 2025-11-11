@@ -169,9 +169,9 @@ const deleteAccount = async () => {
   }
 }
 
-const logout = async () => {
-  store.currentUser.value = null
-  await router.push({ name: 'Home' })
+const logout = () => {
+  store.logout()
+  router.push({ name: 'Home' })
   toast.info('Вы вышли из аккаунта')
 }
 </script>

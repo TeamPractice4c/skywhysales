@@ -3,6 +3,7 @@ import { ref, useTemplateRef } from 'vue'
 import useUserStore from '@/stores/user.js'
 import { useToast } from 'vue-toastification'
 import { useRouter } from 'vue-router'
+import { ru } from 'date-fns/locale'
 
 const toast = useToast()
 const router = useRouter()
@@ -121,6 +122,7 @@ const signUp = async () => {
       class="datepicker"
       :time-config="{ enableTimePicker: false }"
       :maxDate="Date.now()"
+      :locale="ru"
       placeholder="Введите дату рождения"
     />
     <input
@@ -153,7 +155,7 @@ input::-webkit-calendar-picker-indicator {
   display: none !important;
 }
 .sign-up input {
-  color: #7c8db0;
+  color: var(--color-grey-400);
   border: 1px solid #cbd4e6;
   border-radius: 4px;
   font-size: 16px;
@@ -164,13 +166,7 @@ input::-webkit-calendar-picker-indicator {
 </style>
 
 <style scoped>
-@font-face {
-  font-family: 'Nunito-sans';
-  src: url('../assets/fonts/NunitoSans.ttf');
-}
-
 * {
-  font-family: 'Nunito-sans', sans-serif;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -192,7 +188,7 @@ input::-webkit-calendar-picker-indicator {
   border-radius: 4px;
   height: 5vh;
   font-size: 16px;
-  background: #605dec;
+  background: var(--color-purple-blue);
   color: white;
 }
 

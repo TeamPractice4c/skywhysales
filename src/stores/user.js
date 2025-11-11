@@ -118,7 +118,11 @@ const useUserStore = defineStore('users', () => {
       })
   }
 
-  return { currentUser, userError, login, register, getUsers, getUser, editUser, deleteUser }
+  function logout() {
+    currentUser.value = null
+  }
+
+  return { currentUser, userError, login, register, getUsers, getUser, editUser, deleteUser, logout }
 })
 
 export default useUserStore

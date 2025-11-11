@@ -28,16 +28,8 @@
 </template>
 
 <style scoped>
-@font-face {
-  font-family: 'Nunito-sans';
-  src: url('../assets/fonts/NunitoSans.ttf');
-}
-
-* {
-  font-family: 'Nunito-sans', sans-serif;
-}
 p {
-  color: #7c8db0;
+  color: var(--color-grey-400);
 }
 .footer {
   display: flex;

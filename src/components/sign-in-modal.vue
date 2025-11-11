@@ -82,26 +82,17 @@ const signUp = () => {
 </template>
 
 <style scoped>
-@font-face {
-  font-family: 'Nunito-sans';
-  src: url('../assets/fonts/NunitoSans.ttf');
-}
-
-* {
-  font-family: 'Nunito-sans', sans-serif;
-}
-
 .modal-btn {
-  background-color: #605dec;
+  background-color: var(--color-purple-blue);
   transition: 0.5s;
   padding: 0.5rem 1.5rem;
   border: none;
   border-radius: 4px;
-  color: #fafafa;
+  color: var(--color-grey-100);
 }
 .modal-btn:hover {
-  background: #fafafa;
-  color: #605dec;
+  background: var(--color-grey-100);
+  color: var(--color-purple-blue);
   transition: 0.5s;
   cursor: pointer;
 }
@@ -135,7 +126,7 @@ input {
   outline: none;
   border: 2px solid #ccc;
   display: block;
-  color: #7c8db0;
+  color: var(--color-grey-400);
   padding: 0.5rem 1.5rem;
   border-radius: 4px;
   font-size: 1rem;
@@ -154,7 +145,7 @@ svg:hover {
 
 .actions p {
   text-align: center;
-  color: #7c8db0;
+  color: var(--color-grey-400);
 }
 
 .actions p:hover {
