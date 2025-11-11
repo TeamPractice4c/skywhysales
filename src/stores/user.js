@@ -7,6 +7,13 @@ const useUserStore = defineStore('users', () => {
   const userError = ref(null)
   const usersList = ref([])
 
+  function getError(err) {
+    if (err.statusCode === 502) {
+      userError.value = 'SkyWhySales в настоящее время испытывает перебои в работе.'
+      return
+    }
+    userError.value = err.response.data
+  }
   async function login(user) {
     await axios
       .postForm(
@@ -25,9 +32,7 @@ const useUserStore = defineStore('users', () => {
       .then((res) => {
         currentUser.value = res.data
       })
-      .catch((err) => {
-        userError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   async function register(user) {
@@ -49,12 +54,7 @@ const useUserStore = defineStore('users', () => {
         currentUser.value = res.data
         userError.value = null
       })
-      .catch((err) => {
-        userError.value = err.response.data
-        if (err.response?.data?.errors) {
-          console.log('Validation errors:', err.response.data.errors)
-        }
-      })
+      .catch((err) => getError(err))
   }
 
   async function getUsers() {
@@ -68,6 +68,7 @@ const useUserStore = defineStore('users', () => {
           }
         })
       })
+      .catch((err) => getError(err))
   }
 
   async function getUser(userId) {
@@ -76,25 +77,16 @@ const useUserStore = defineStore('users', () => {
       .then((res) => {
         return res.data
       })
-      .catch((err) => {
-        userError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   async function editUser(user) {
-    let payload = user
-    if (user instanceof FormData) {
-      payload = Object.fromEntries(user.entries())
-    }
-
-    await axios.post('http://localhost:3000/api/User/EditUser', payload)
+    await axios.post('http://localhost:3000/api/User/EditUser', user)
       .then((res) => {
         currentUser.value = res.data
         userError.value = null
       })
-      .catch((err) => {
-        userError.value = err.response?.data || 'Ошибка сервера'
-      })
+      .catch((err) => getError(err))
   }
 
   async function deleteUser(userId) {
@@ -105,17 +97,17 @@ const useUserStore = defineStore('users', () => {
     await axios
       .delete(`http://localhost:3000/api/User/DeleteUser/${userId}`)
       .then(() => {
-        const index = usersList.value.findIndex((u) => u.uId === userId)
-        if (index > -1) {
-          usersList.value.slice(index, 1)
+        if (usersList.value.length > 0) {
+          const index = usersList.value.findIndex((u) => u.uId === userId)
+          if (index > -1) {
+            usersList.value.slice(index, 1)
+          }
         }
         if (currentUser.value.uId === userId) {
           currentUser.value = null
         }
       })
-      .catch((err) => {
-        userError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   function logout() {
