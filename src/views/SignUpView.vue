@@ -140,7 +140,7 @@ const signUp = async () => {
       ref="number-input"
     />
     <div class="actions">
-      <button type="button" class="modal-btn" @click="signUp">Зарегистрироваться</button>
+      <button type="button" class="btn" @click="signUp">Зарегистрироваться</button>
     </div>
   </div>
 </template>

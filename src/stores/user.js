@@ -82,25 +82,23 @@ const useUserStore = defineStore('users', () => {
   }
 
   async function editUser(user) {
-    await axios.post('http://localhost:3000/api/User/EditUser', user)
-    .then((res) => {
-      if (currentUser.value && currentUser.value.uRole !== 'Менеджер') {
+    let payload = user
+    if (user instanceof FormData) {
+      payload = Object.fromEntries(user.entries())
+    }
+
+    await axios.post('http://localhost:3000/api/User/EditUser', payload)
+      .then((res) => {
         currentUser.value = res.data
-      }
-      else if (usersList.value.length && currentUser.value.uRole === 'Менеджер') {
-        const index = usersList.value.findIndex((u) => u.uId === user.uId)
-        if (index > -1) {
-          usersList.value[index] = res.data
-        }
-      }
-    })
+        userError.value = null
+      })
       .catch((err) => {
-        userError.value = err.response.data
+        userError.value = err.response?.data || 'Ошибка сервера'
       })
   }
 
   async function deleteUser(userId) {
-    if (currentUser.value.uRole !== 'Менеджер') {
+    if (currentUser.value.uId !== userId && currentUser.value.uRole !== 'Менеджер') {
       userError.value = 'Недостаточно прав'
       return
     }
@@ -110,6 +108,9 @@ const useUserStore = defineStore('users', () => {
         const index = usersList.value.findIndex((u) => u.uId === userId)
         if (index > -1) {
           usersList.value.slice(index, 1)
+        }
+        if (currentUser.value.uId === userId) {
+          currentUser.value = null
         }
       })
       .catch((err) => {
