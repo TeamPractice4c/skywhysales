@@ -7,6 +7,14 @@ const useFlightStore = defineStore('flights', () => {
   const flightError = ref(null)
   const flightsList = ref([])
 
+  function getError(err) {
+    if (!err.response || err.response.status === 502) {
+      flightError.value = 'SkyWhySales в настоящее время испытывает перебои в работе. Повторите попытку позже.'
+      return
+    }
+    flightError.value = err.response.data
+  }
+
   const getFlights = async () => {
     await axios
       .get('http://localhost:3000/api/flight/GetFlights')
@@ -17,10 +25,9 @@ const useFlightStore = defineStore('flights', () => {
             ...res.data[key],
           }
         })
+        flightError.value = null
       })
-      .catch((err) => {
-        flightError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   const getFlight = async (id) => {
@@ -28,10 +35,9 @@ const useFlightStore = defineStore('flights', () => {
       .get(`http://localhost:3000/api/flight/GetFlight/${id}`)
       .then((res) => {
         currentFlight.value = res.data
+        flightError.value = null
       })
-      .catch((err) => {
-        flightError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   const addFlight = async (flight) => {
@@ -52,10 +58,9 @@ const useFlightStore = defineStore('flights', () => {
         } else {
           await getFlights()
         }
+        flightError.value = null
       })
-      .catch((err) => {
-        flightError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   const editFlight = async (flight) => {
@@ -66,10 +71,9 @@ const useFlightStore = defineStore('flights', () => {
         if (index > -1) {
           flightsList.value[index] = res.data
         }
+        flightError.value = null
       })
-      .catch((err) => {
-        flightError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   return { currentFlight, flightError, flightsList, getFlights, getFlight, addFlight, editFlight }

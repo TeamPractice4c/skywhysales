@@ -7,6 +7,14 @@ const useAirportStore = defineStore('airports', () => {
   const airportError = ref(null)
   const airportsList = ref([])
 
+  function getError(err) {
+    if (!err.response || err.response.status === 502) {
+      airportError.value = 'SkyWhySales в настоящее время испытывает перебои в работе. Повторите попытку позже.'
+      return
+    }
+    airportError.value = err.response.data
+  }
+
   const getAirports = async () => {
     await axios
       .get('http://localhost:3000/api/airport/GetAirports')
@@ -17,10 +25,9 @@ const useAirportStore = defineStore('airports', () => {
             ...res.data[key],
           }
         })
+        airportError.value = null
       })
-      .catch((err) => {
-        airportError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   const getAirport = async (id) => {
@@ -28,10 +35,9 @@ const useAirportStore = defineStore('airports', () => {
       .get(`http://localhost:3000/api/airport/GetAirport/${id}`)
       .then((res) => {
         currentAirport.value = res.data
+        airportError.value = null
       })
-      .catch((err) => {
-        airportError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   const addAirport = async (airport) => {
@@ -50,6 +56,7 @@ const useAirportStore = defineStore('airports', () => {
         } else {
           await getAirports()
         }
+        airportError.value = null
       })
   }
 
@@ -61,10 +68,9 @@ const useAirportStore = defineStore('airports', () => {
         if (index > -1) {
           airportsList.value[index] = res.data
         }
+        airportError.value = null
       })
-      .catch((err) => {
-        airportError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   const deleteAirport = async (airportId) => {
@@ -75,10 +81,9 @@ const useAirportStore = defineStore('airports', () => {
         if (index > -1) {
           airportsList.value.slice(index, 1)
         }
+        airportError.value = null
       })
-      .catch((err) => {
-        airportError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   return {

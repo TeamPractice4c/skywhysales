@@ -7,6 +7,14 @@ const useAirlineStore = defineStore('airlines', () => {
   const airlineError = ref(null)
   const airlinesList = ref([])
 
+  function getError(err) {
+    if (!err.response || err.response.status === 502) {
+      airlineError.value = 'SkyWhySales в настоящее время испытывает перебои в работе. Повторите попытку позже.'
+      return
+    }
+    airlineError.value = err.response.data
+  }
+
   const getAirlines = async () => {
     await axios
       .get('http://localhost:3000/api/airline/GetAirlines')
@@ -17,10 +25,9 @@ const useAirlineStore = defineStore('airlines', () => {
             ...res.data[key],
           }
         })
+        airlineError.value = null
       })
-      .catch((err) => {
-        airlineError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   const getAirline = async (id) => {
@@ -28,10 +35,9 @@ const useAirlineStore = defineStore('airlines', () => {
       .get(`http://localhost:3000/api/airline/GetAirline/${id}`)
       .then((res) => {
         currentAirline.value = res.data
+        airlineError.value = null
       })
-      .catch((err) => {
-        airlineError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   const addAirline = async (airline) => {
@@ -47,10 +53,9 @@ const useAirlineStore = defineStore('airlines', () => {
         } else {
           await getAirlines()
         }
+        airlineError.value = null
       })
-      .catch((err) => {
-        airlineError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   const editAirline = async (airline) => {
@@ -61,10 +66,9 @@ const useAirlineStore = defineStore('airlines', () => {
         if (index > -1) {
           airlinesList.value[index] = res.data
         }
+        airlineError.value = null
       })
-      .catch((err) => {
-        airlineError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   const deleteAirline = async (airlineId) => {
@@ -75,10 +79,9 @@ const useAirlineStore = defineStore('airlines', () => {
         if (index > -1) {
           airlinesList.value.slice(index, 1)
         }
+        airlineError.value = null
       })
-      .catch((err) => {
-        airlineError.value = err.response.data
-      })
+      .catch((err) => getError(err))
   }
 
   return {

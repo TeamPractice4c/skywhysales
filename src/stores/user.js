@@ -8,8 +8,8 @@ const useUserStore = defineStore('users', () => {
   const usersList = ref([])
 
   function getError(err) {
-    if (err.statusCode === 502) {
-      userError.value = 'SkyWhySales в настоящее время испытывает перебои в работе.'
+    if (!err.response || err.response.status === 502) {
+      userError.value = 'SkyWhySales в настоящее время испытывает перебои в работе. Повторите попытку позже.'
       return
     }
     userError.value = err.response.data
@@ -31,6 +31,7 @@ const useUserStore = defineStore('users', () => {
       )
       .then((res) => {
         currentUser.value = res.data
+        userError.value = null
       })
       .catch((err) => getError(err))
   }
@@ -67,6 +68,7 @@ const useUserStore = defineStore('users', () => {
             ...res.data[key],
           }
         })
+        userError.value = null
       })
       .catch((err) => getError(err))
   }
@@ -75,6 +77,7 @@ const useUserStore = defineStore('users', () => {
     await axios
       .get(`http://localhost:3000/api/User/GetUser/${userId}`)
       .then((res) => {
+        userError.value = null
         return res.data
       })
       .catch((err) => getError(err))
@@ -106,6 +109,7 @@ const useUserStore = defineStore('users', () => {
         if (currentUser.value.uId === userId) {
           currentUser.value = null
         }
+        userError.value = null
       })
       .catch((err) => getError(err))
   }
