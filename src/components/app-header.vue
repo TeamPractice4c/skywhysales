@@ -17,11 +17,11 @@ const signUp = () => {
   router.push({ name: 'SignUp' })
 }
 
-/*const goToFlights = () => {
+const goToFlights = () => {
   router.push({
     name: 'Flights',
   })
-}*/
+}
 
 const goToUser = () => {
   router.push({
@@ -39,7 +39,7 @@ const goToUser = () => {
       <img style="justify-self: flex-start" src="../assets/icons/logo.svg" alt="" />
     </router-link>
     <div class="header-actions">
-      <p class="action" :class="{ active: route.name === 'Flights' }">
+      <p class="action" @click="goToFlights" :class="{ active: route.name === 'Flights' }">
         Рейсы
       </p>
       <p class="action" v-if="store.currentUser">Мои рейсы</p>
@@ -62,13 +62,8 @@ const goToUser = () => {
 </template>
 
 <style scoped>
-@font-face {
-  font-family: 'Nunito-sans';
-  src: url('../assets/fonts/NunitoSans.ttf');
-}
-
 * {
-  font-family: 'Nunito-sans', sans-serif;
+  font-family: --font-family-nunito-sans, sans-serif;
   font-size: 16px;
 }
 .header {
@@ -93,13 +88,13 @@ const goToUser = () => {
   cursor: pointer;
 }
 .action-btn {
-  background: #605dec;
-  color: #fafafa;
+  background: var(--color-purple-blue);
+  color: var(--color-grey-100);
   border: none;
   border-radius: 4px;
 }
 
 .active {
-  color: #605dec;
+  color: var(--color-purple-blue);
 }
 </style>

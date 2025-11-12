@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import SignUpView from '@/views/SignUpView.vue'
+import AllFlightsView from '@/views/AllFlightsView.vue'
 import useUserStore from '@/stores/user.js'
 
 const router = createRouter({
@@ -21,7 +22,12 @@ const router = createRouter({
       name: 'User',
       component: () => import('../views/UserView.vue'),
       meta: { isLoginNeeded: true },
-    }
+    },
+    {
+      path: '/flights',
+      name: 'Flights',
+      component: AllFlightsView,
+    },
   ],
 })
 

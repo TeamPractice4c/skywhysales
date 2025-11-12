@@ -2,6 +2,7 @@
 import { ref, useTemplateRef } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useRouter } from 'vue-router'
+import { ru } from 'date-fns/locale'
 
 const toast = useToast()
 
@@ -11,7 +12,7 @@ const dates = ref()
 const fromInput = useTemplateRef('from-input')
 const toInput = useTemplateRef('to-input')
 
-/*const searchFlights = () => {
+const searchFlights = () => {
   const from = fromInput.value
   const to = toInput.value
 
@@ -44,16 +45,24 @@ const toInput = useTemplateRef('to-input')
   const searchProps = {
     countryFrom: from.value,
     countryTo: to.value,
-    startDate: startDate,
-    endDate: endDate,
+    startDate: startDate.toLocaleString('ru-RU'),
+    endDate: endDate.toLocaleString('ru-RU', { dateStyle: 'short' }),
   }
 
   router.push({
-    name: 'AllFlights', params: {
-      searchParams: searchProps,
+    name: 'Flights', query: {
+      countryFrom: searchProps.countryFrom,
+      countryTo: searchProps.countryTo,
+      startDate: searchProps.startDate,
+      endDate: searchProps.endDate,
+    },params: {
+      countryFrom: searchProps.countryFrom,
+      countryTo: searchProps.countryTo,
+      startDate: startDate,
+      endDate: endDate,
     }
   })
-}*/
+}
 </script>
 
 <template>
@@ -71,9 +80,10 @@ const toInput = useTemplateRef('to-input')
           range
           :time-config="{ enableTimePicker: false }"
           :min-date="Date.now()"
+          :locale="ru"
           placeholder="Сроки полета"
         />
-        <button type="button">Найти</button>
+        <button type="button" @click="searchFlights">Найти</button>
         <datalist id="countries">
           <option value="Азербайджан" />
           <option value="Алжир" />
@@ -113,7 +123,7 @@ input::-webkit-calendar-picker-indicator {
 }
 
 .search-options input {
-  color: #7c8db0;
+  color: var(--color-grey-400);
   border: 1px solid #cbd4e6;
   border-radius: 4px;
   font-size: 16px;
@@ -124,13 +134,7 @@ input::-webkit-calendar-picker-indicator {
 </style>
 
 <style scoped>
-@font-face {
-  font-family: 'Nunito-sans';
-  src: url('../assets/fonts/NunitoSans.ttf');
-}
-
 * {
-  font-family: 'Nunito-sans', sans-serif;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -178,7 +182,7 @@ input::-webkit-calendar-picker-indicator {
   border-radius: 4px;
   height: 5vh;
   font-size: 16px;
-  background: #605dec;
+  background: var(--color-purple-blue);
   color: white;
 }
 

@@ -34,18 +34,16 @@ const Logout = () => {
 
 <style scoped></style>-->
 
-
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 import useUserStore from '@/stores/user.js'
 
-// Рефы для инпутов
-const surnameInput = ref()
-const nameInput = ref(null)
-const patronymicInput = ref(null)
-const phoneInput = ref(null)
+const surnameInput = useTemplateRef('surnameInput')
+const nameInput = useTemplateRef('nameInput')
+const patronymicInput = useTemplateRef('patronymicInput')
+const phoneInput = useTemplateRef('phoneInput')
 
 const toast = useToast()
 const router = useRouter()
@@ -53,12 +51,6 @@ const store = useUserStore()
 const isEditing = ref(false)
 
 onMounted(() => {
-  if (!store.currentUser) {
-    router.push({ name: 'Home' })
-    return
-  }
-
-  // Безопасно заполняем
   if (surnameInput.value) surnameInput.value.value = store.currentUser.uSurname || ''
   if (nameInput.value) nameInput.value.value = store.currentUser.uName || ''
   if (patronymicInput.value) patronymicInput.value.value = store.currentUser.uPatronymic || ''
@@ -95,25 +87,20 @@ const saveProfile = async () => {
     uName: name,
     uPatronymic: patronymic || '',
     uPhone: phone,
-    uRole: "",
-    uPassword: "",
+    uRole: '',
+    uPassword: '',
     uEmail: store.currentUser.uEmail,
     uBirthdate: store.currentUser.uBirthdate,
     uPassportSerial: store.currentUser.uPassportSerial,
     uPassportNumber: store.currentUser.uPassportNumber,
   }
 
-  try {
-    await store.editUser(payload)
-    if (store.userError) {
-      toast.error(store.userError)
-    } else {
-      toast.success('Профиль обновлён')
-      isEditing.value = false
-    }
-  } catch (err) {
-    console.error(err)
-    toast.error('Ошибка при сохранении')
+  await store.editUser(payload)
+  if (store.userError) {
+    toast.error(store.userError)
+  } else {
+    toast.success('Профиль обновлён')
+    isEditing.value = false
   }
 }
 /*
@@ -154,18 +141,12 @@ const deleteAccount = async () => {
   if (!confirm('Вы уверены, что хотите удалить аккаунт? Это действие нельзя отменить.')) {
     return
   }
-
-  try {
-    await store.deleteUser(store.currentUser.uId)
-    if (store.userError) {
-      toast.error(store.userError)
-    } else {
-      toast.success('Аккаунт удалён')
-      await router.push({ name: 'Home' })
-    }
-  } catch (err) {
-    console.error(err)
-    toast.error('Ошибка при удалении')
+  await store.deleteUser(store.currentUser.uId)
+  if (store.userError) {
+    toast.error(store.userError)
+  } else {
+    toast.success('Аккаунт удалён')
+    await router.push({ name: 'Home' })
   }
 }
 
@@ -180,7 +161,7 @@ const logout = () => {
   <div class="cabinet">
     <h2>Личный кабинет</h2>
 
-<!--
+    <!--
     <div class="avatar-section">
       <img :src="currentAvatar" alt="Аватар" class="avatar" />
       <label v-if="isEditing" class="upload-btn">
@@ -219,7 +200,10 @@ const logout = () => {
       <p><strong>Отчество:</strong> {{ store.currentUser?.uPatronymic || '—' }}</p>
       <p><strong>Телефон:</strong> {{ store.currentUser?.uPhone }}</p>
       <p><strong>Дата рождения:</strong> {{ store.currentUser?.uBirthdate }}</p>
-      <p><strong>Паспорт:</strong> {{ store.currentUser?.uPassportSerial }} {{ store.currentUser?.uPassportNumber }}</p>
+      <p>
+        <strong>Паспорт:</strong> {{ store.currentUser?.uPassportSerial }}
+        {{ store.currentUser?.uPassportNumber }}
+      </p>
 
       <div class="actions">
         <button @click="isEditing = true" class="btn edit">Редактировать профиль</button>
@@ -234,13 +218,7 @@ const logout = () => {
 </template>
 
 <style scoped>
-@font-face {
-  font-family: 'Nunito-sans';
-  src: url('../assets/fonts/NunitoSans.ttf');
-}
-
 * {
-  font-family: 'Nunito-sans', sans-serif;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -287,7 +265,8 @@ h2 {
 }
 */
 
-.info, .form p {
+.info,
+.form p {
   margin: 10px 0;
   color: #555;
 }
@@ -317,11 +296,26 @@ h2 {
   transition: 0.2s;
 }
 
-.btn.save { background: #28a745; color: white; }
-.btn.cancel { background: #6c757d; color: white; }
-.btn.edit { background: #605dec; color: white; }
-.btn.danger { background: #dc3545; color: white; }
-.btn.logout { background: #ffc107; color: #212529; }
+.btn.save {
+  background: #28a745;
+  color: white;
+}
+.btn.cancel {
+  background: #6c757d;
+  color: white;
+}
+.btn.edit {
+  background: #605dec;
+  color: white;
+}
+.btn.danger {
+  background: #dc3545;
+  color: white;
+}
+.btn.logout {
+  background: #ffc107;
+  color: #212529;
+}
 
 .danger-zone {
   margin-top: 20px;

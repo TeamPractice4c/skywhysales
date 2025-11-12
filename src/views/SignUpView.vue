@@ -182,7 +182,7 @@ input::-webkit-calendar-picker-indicator {
   gap: 10px;
 }
 
-.sign-up button {
+.btn {
   padding: 6px 10px;
   border: none;
   border-radius: 4px;
@@ -190,6 +190,10 @@ input::-webkit-calendar-picker-indicator {
   font-size: 16px;
   background: var(--color-purple-blue);
   color: white;
+}
+
+.btn:hover {
+  cursor: pointer;
 }
 
 svg:hover {
