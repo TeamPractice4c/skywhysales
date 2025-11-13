@@ -9,7 +9,8 @@ const useAirportStore = defineStore('airports', () => {
 
   function getError(err) {
     if (!err.response || err.response.status === 502) {
-      airportError.value = 'SkyWhySales в настоящее время испытывает перебои в работе. Повторите попытку позже.'
+      airportError.value =
+        'SkyWhySales в настоящее время испытывает перебои в работе. Повторите попытку позже.'
       return
     }
     airportError.value = err.response.data

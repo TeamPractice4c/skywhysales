@@ -32,12 +32,9 @@ const router = createRouter({
       path: '/flights/:id',
       name: 'Flight',
       component: () => import('../views/FlightView.vue'),
-      props: true,
     },
   ],
 })
-
-
 
 router.beforeEach((to, from) => {
   const userStore = useUserStore()

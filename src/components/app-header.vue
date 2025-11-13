@@ -28,7 +28,7 @@ const goToUser = () => {
     name: 'User',
     params: {
       id: store.currentUser.uId,
-    }
+    },
   })
 }
 </script>
@@ -39,12 +39,17 @@ const goToUser = () => {
       <img style="justify-self: flex-start" src="../assets/icons/logo.svg" alt="" />
     </router-link>
     <div class="header-actions">
-      <p class="action" @click="goToFlights" :class="{ active: route.name === 'Flights' }">
-        Рейсы
-      </p>
+      <p class="action" @click="goToFlights" :class="{ active: route.name === 'Flights' }">Рейсы</p>
       <p class="action" v-if="store.currentUser">Мои рейсы</p>
       <p class="action" v-else @click="showAuth = true">Войти</p>
-      <p class="action" v-if="store.currentUser" @click="goToUser" :class="{ active: route.name === 'User'}">Мой аккаунт</p>
+      <p
+        class="action"
+        v-if="store.currentUser"
+        @click="goToUser"
+        :class="{ active: route.name === 'User' }"
+      >
+        Мой аккаунт
+      </p>
       <button
         type="button"
         class="action action-btn"

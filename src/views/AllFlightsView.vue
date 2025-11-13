@@ -33,7 +33,6 @@ onMounted(async () => {
     searchParams.startDate = new Date(route.query.startDate)
     searchParams.endDate = new Date(route.query.endDate)
   }
-
   if (!flightStore.flightsList.length) {
     await flightStore.getFlights()
   }
@@ -101,7 +100,7 @@ onMounted(async () => {
     </p>
     <div class="output">
       <div class="flights-output">
-        <flight-card v-for="el in flightStore.flightsList" @to-flight="toFlight(el.fId)" :flight="el" />
+        <flight-card v-for="el in flightStore.flightsList" @click="toFlight(el.fId)" :flight="el" />
       </div>
       <button class="search-all" type="button">Посмотреть все</button>
     </div>

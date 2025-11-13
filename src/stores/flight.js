@@ -9,7 +9,8 @@ const useFlightStore = defineStore('flights', () => {
 
   function getError(err) {
     if (!err.response || err.response.status === 502) {
-      flightError.value = 'SkyWhySales в настоящее время испытывает перебои в работе. Повторите попытку позже.'
+      flightError.value =
+        'SkyWhySales в настоящее время испытывает перебои в работе. Повторите попытку позже.'
       return
     }
     flightError.value = err.response.data
