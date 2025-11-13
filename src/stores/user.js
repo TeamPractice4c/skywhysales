@@ -9,12 +9,19 @@ const useUserStore = defineStore('users', () => {
 
   function getError(err) {
     if (!err.response || err.response.status === 502) {
-      userError.value = 'SkyWhySales в настоящее время испытывает перебои в работе. Повторите попытку позже.'
+      userError.value =
+        'SkyWhySales в настоящее время испытывает перебои в работе. Повторите попытку позже.'
       return
     }
     userError.value = err.response.data
   }
   async function login(user) {
+    if (localStorage.getItem('user')) {
+      const localUser = JSON.parse(localStorage.getItem('user'))
+      user.login = localUser.login
+      user.password = localUser.password
+    }
+
     await axios
       .postForm(
         'http://localhost:3000/api/user/auth',
@@ -31,9 +38,23 @@ const useUserStore = defineStore('users', () => {
       )
       .then((res) => {
         currentUser.value = res.data
+        if (!localStorage.getItem('user')) {
+          localStorage.setItem(
+            'user',
+            JSON.stringify({
+              login: user.login,
+              password: res.data.uPassword,
+            }),
+          )
+        }
         userError.value = null
       })
-      .catch((err) => getError(err))
+      .catch((err) => {
+        if (err.response) {
+          localStorage.removeItem('user')
+        }
+        getError(err)
+      })
   }
 
   async function register(user) {
@@ -53,6 +74,15 @@ const useUserStore = defineStore('users', () => {
       })
       .then((res) => {
         currentUser.value = res.data
+        if (!localStorage.getItem('user')) {
+          localStorage.setItem(
+            'user',
+            JSON.stringify({
+              login: user.login,
+              password: res.data.uPassword,
+            }),
+          )
+        }
         userError.value = null
       })
       .catch((err) => getError(err))
@@ -62,7 +92,7 @@ const useUserStore = defineStore('users', () => {
     await axios
       .get('http://localhost:3000/api/User/GetUsers')
       .then((res) => {
-        usersList.value = Object.keys(res.data).map(key => {
+        usersList.value = Object.keys(res.data).map((key) => {
           return {
             id: key,
             ...res.data[key],
@@ -84,7 +114,8 @@ const useUserStore = defineStore('users', () => {
   }
 
   async function editUser(user) {
-    await axios.post('http://localhost:3000/api/User/EditUser', user)
+    await axios
+      .post('http://localhost:3000/api/User/EditUser', user)
       .then((res) => {
         currentUser.value = res.data
         userError.value = null
@@ -115,10 +146,21 @@ const useUserStore = defineStore('users', () => {
   }
 
   function logout() {
+    localStorage.removeItem('user')
     currentUser.value = null
   }
 
-  return { currentUser, userError, login, register, getUsers, getUser, editUser, deleteUser, logout }
+  return {
+    currentUser,
+    userError,
+    login,
+    register,
+    getUsers,
+    getUser,
+    editUser,
+    deleteUser,
+    logout,
+  }
 })
 
 export default useUserStore
