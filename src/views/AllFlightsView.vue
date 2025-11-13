@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import { ru } from 'date-fns/locale'
 import FlightCard from '@/components/flight-card.vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const toast = useToast()
 const flightStore = useFlightStore()
@@ -13,12 +13,17 @@ const dates = ref()
 
 const searchFlights = () => {}
 const route = useRoute()
+const router = useRouter()
 
 const searchParams = {
   countryFrom: '',
   countryTo: '',
   startDate: null,
   endDate: null,
+}
+
+const toFlight = (id) => {
+  router.push({ name: 'Flight', params: { id } })
 }
 
 onMounted(async () => {
@@ -91,13 +96,15 @@ onMounted(async () => {
       <p class="additional-filter">авиакомпании</p>
       <p class="additional-filter">класс обслуживания</p>
     </div>
-    <p style="color: var(--color-grey-600);">Выберите рейс <span style="color: var(--color-purple-blue)">вылета</span></p>
+    <p style="color: var(--color-grey-600)">
+      Выберите рейс <span style="color: var(--color-purple-blue)">вылета</span>
+    </p>
     <div class="output">
-    <div class="flights-output">
-      <flight-card v-for="el in flightStore.flightsList" :flight="el"/>
+      <div class="flights-output">
+        <flight-card v-for="el in flightStore.flightsList" @to-flight="toFlight(el.fId)" :flight="el" />
+      </div>
+      <button class="search-all" type="button">Посмотреть все</button>
     </div>
-    <button class="search-all" type="button">Посмотреть все</button>
-  </div>
   </div>
 </template>
 
@@ -115,9 +122,14 @@ input::-webkit-calendar-picker-indicator {
   border: 1px solid #cbd4e6;
   border-radius: 4px;
   font-size: 16px;
-  width: 15vw;
+  min-width: 20vw;
   height: 5vh;
   padding-left: 40px;
+}
+
+.search-filters div {
+  min-width: 20vw;
+  height: 5vh;
 }
 </style>
 
@@ -139,7 +151,7 @@ input::-webkit-calendar-picker-indicator {
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: 75vw;
+  width: auto;
   border-radius: 6px;
 }
 
@@ -172,7 +184,6 @@ input::-webkit-calendar-picker-indicator {
   flex-direction: column;
   gap: 16px;
   width: auto;
-
 }
 
 .flights-output {
@@ -190,7 +201,7 @@ input::-webkit-calendar-picker-indicator {
 }
 
 .search-all {
-  align-self: flex-end ;
+  align-self: flex-end;
   background: white;
   color: var(--color-purple-blue);
   border: 1px solid var(--color-purple-blue);
@@ -199,7 +210,7 @@ input::-webkit-calendar-picker-indicator {
   font-size: 18px;
 }
 
-.search-all:hover{
+.search-all:hover {
   cursor: pointer;
 }
 

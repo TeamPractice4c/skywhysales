@@ -36,7 +36,7 @@ const Logout = () => {
 
 <script setup>
 import { ref, onMounted, useTemplateRef } from 'vue'
-import { useRouter } from 'vue-router'
+import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 import useUserStore from '@/stores/user.js'
 
@@ -55,6 +55,16 @@ onMounted(() => {
   if (nameInput.value) nameInput.value.value = store.currentUser.uName || ''
   if (patronymicInput.value) patronymicInput.value.value = store.currentUser.uPatronymic || ''
   if (phoneInput.value) phoneInput.value.value = store.currentUser.uPhone || ''
+})
+
+onBeforeRouteLeave((to, from, next) => {
+  if (isEditing.value) {
+    if (!confirm('Изменения не сохранены, вы уверены что хотите завершить редактировние?')) {
+      next(false)
+    }
+    next()
+  }
+  next()
 })
 
 const getValue = (inputRef) => {

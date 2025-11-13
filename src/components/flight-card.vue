@@ -29,7 +29,7 @@ const getFlightTime = (arrivalTime, departureTime) => {
 </script>
 
 <template>
-  <div class="flight-card">
+  <div class="flight-card" @click="$emit('toFlight')">
     <img :src="imageSource" alt="" width="40" height="40" />
     <div>
       <p class="primary">
@@ -38,8 +38,8 @@ const getFlightTime = (arrivalTime, departureTime) => {
       <p class="secondary">{{ flight.fAirline }}</p>
     </div>
     <div>
-      <p class="primary">
-        {{
+      <p class="primary">{{ flight.fDepartureAirport }} - {{ flight.fArrivalAirport }}</p>
+      <p class="secondary">{{
           new Date(flight.fDepartureTime).toLocaleString('ru-RU', {
             dateStyle: 'short',
             timeStyle: 'short',
@@ -51,8 +51,7 @@ const getFlightTime = (arrivalTime, departureTime) => {
             dateStyle: 'short',
             timeStyle: 'short',
           })
-        }}
-      </p>
+        }}</p>
     </div>
     <div>
       <p class="primary">{{ flight.fPrice }} ₽</p>
@@ -89,9 +88,11 @@ const getFlightTime = (arrivalTime, departureTime) => {
 
 .primary {
   color: var(--color-grey-900);
+  text-wrap: nowrap;
 }
 
 .secondary {
   color: var(--color-grey-400);
+  text-wrap: nowrap;
 }
 </style>

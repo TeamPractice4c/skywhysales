@@ -45,22 +45,18 @@ const searchFlights = () => {
   const searchProps = {
     countryFrom: from.value,
     countryTo: to.value,
-    startDate: startDate.toLocaleString('ru-RU'),
-    endDate: endDate.toLocaleString('ru-RU', { dateStyle: 'short' }),
+    startDate: startDate.toLocaleDateString('ru-RU'),
+    endDate: endDate.toLocaleDateString('ru-RU'),
   }
 
   router.push({
-    name: 'Flights', query: {
+    name: 'Flights',
+    query: {
       countryFrom: searchProps.countryFrom,
       countryTo: searchProps.countryTo,
       startDate: searchProps.startDate,
       endDate: searchProps.endDate,
-    },params: {
-      countryFrom: searchProps.countryFrom,
-      countryTo: searchProps.countryTo,
-      startDate: startDate,
-      endDate: endDate,
-    }
+    },
   })
 }
 </script>
@@ -70,7 +66,13 @@ const searchFlights = () => {
     <div class="search">
       <h1 class="slogan"><span>Больше чем</span> <br /><span>простая поездка</span></h1>
       <div class="search-options">
-        <input list="countries" name="departure" id="departure" placeholder="Откуда?" ref="from-input" />
+        <input
+          list="countries"
+          name="departure"
+          id="departure"
+          placeholder="Откуда?"
+          ref="from-input"
+        />
         <input list="countries" name="arrival" id="arrival" placeholder="Куда?" ref="to-input" />
         <date-picker
           v-model="dates"
@@ -147,7 +149,7 @@ input::-webkit-calendar-picker-indicator {
   align-items: center;
   justify-content: center;
   background-image: url(../assets/images/mainbg.png);
-  width: 100vw;
+  width: auto;
   height: 100vh;
   background-size: contain;
   background-repeat: no-repeat;
@@ -188,9 +190,5 @@ input::-webkit-calendar-picker-indicator {
 
 .search-options button:hover {
   cursor: pointer;
-}
-
-.datepicker {
-  width: 25vw;
 }
 </style>
