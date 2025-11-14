@@ -18,27 +18,42 @@ const toInput = useTemplateRef('to-input')
 const route = useRoute()
 const router = useRouter()
 
-const searchParams = {
+const searchParams = ref({
   countryFrom: '',
   countryTo: '',
   startDate: null,
   endDate: null,
-}
+})
 
 const toFlight = (id) => {
   router.push({ name: 'Flight', params: { id } })
 }
 
+const search = async (params) => {
+  if (!params) {
+    toast.error('Гандон')
+    return
+  }
+  await flightStore.searchFlights(
+    params.countryFrom,
+    params.countryTo,
+    params.startDate,
+    params.endDate,
+  )
+}
+
 onMounted(async () => {
   if (route.query) {
-    searchParams.countryFrom = route.query.countryFrom
-    searchParams.countryTo = route.query.countryTo
-    searchParams.startDate = new Date(route.query.startDate)
-    searchParams.endDate = new Date(route.query.endDate)
-  }
+    searchParams.value.countryFrom = route.query.countryFrom
+    searchParams.value.countryTo = route.query.countryTo
+    searchParams.value.startDate = new Date(route.query.startDate)
+    searchParams.value.endDate = new Date(route.query.endDate)
 
-  if (!flightStore.flightsList.length) {
-    await flightStore.getFlights()
+    await search(searchParams.value)
+  } else {
+    if (!flightStore.flightsList.length) {
+      await flightStore.getFlights()
+    }
   }
   if (flightStore.flightError) {
     toast.error(flightStore.flightError)
@@ -52,7 +67,7 @@ onMounted(async () => {
   }
 })
 
-const searchFlights = () => {
+const searchFlights = async () => {
   const from = fromInput.value
   const to = toInput.value
 
@@ -86,10 +101,8 @@ const searchFlights = () => {
   searchParams.countryTo = to.value
   searchParams.startDate = startDate.toLocaleDateString('ru-RU')
   searchParams.endDate = endDate.toLocaleDateString('ru-RU')
-}
 
-const search = async () => {
-
+  await search(searchParams)
 }
 </script>
 

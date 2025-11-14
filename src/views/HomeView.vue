@@ -45,8 +45,8 @@ const searchFlights = () => {
   const searchProps = {
     countryFrom: from.value,
     countryTo: to.value,
-    startDate: startDate.toLocaleDateString('ru-RU'),
-    endDate: endDate.toLocaleDateString('ru-RU'),
+    startDate: startDate.toLocaleDateString('en-US'),
+    endDate: endDate.toLocaleDateString('en-US'),
   }
 
   router.push({
