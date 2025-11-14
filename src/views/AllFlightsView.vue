@@ -1,17 +1,20 @@
 <script setup>
 import useFlightStore from '@/stores/flight.js'
-import { onMounted, ref } from 'vue'
+import useAirlineStore from '@/stores/airline.js'
+import { onMounted, ref, useTemplateRef } from 'vue'
 import { useToast } from 'vue-toastification'
 import { ru } from 'date-fns/locale'
-import FlightCard from '@/components/flight-card.vue'
 import { useRoute, useRouter } from 'vue-router'
+import FlightCard from '@/components/flight-card.vue'
 
 const toast = useToast()
 const flightStore = useFlightStore()
+const airlineStore = useAirlineStore()
 
 const dates = ref()
+const fromInput = useTemplateRef('from-input')
+const toInput = useTemplateRef('to-input')
 
-const searchFlights = () => {}
 const route = useRoute()
 const router = useRouter()
 
@@ -33,13 +36,61 @@ onMounted(async () => {
     searchParams.startDate = new Date(route.query.startDate)
     searchParams.endDate = new Date(route.query.endDate)
   }
+
   if (!flightStore.flightsList.length) {
     await flightStore.getFlights()
   }
   if (flightStore.flightError) {
     toast.error(flightStore.flightError)
   }
+
+  if (!airlineStore.airlinesList.length) {
+    await airlineStore.getAirlines()
+  }
+  if (airlineStore.airlineError) {
+    toast.error(airlineStore.airlineError)
+  }
 })
+
+const searchFlights = () => {
+  const from = fromInput.value
+  const to = toInput.value
+
+  if (!from.value || !to.value || !dates.value) {
+    toast.error('Заполните все поля')
+  }
+
+  if (!dates.value) {
+    toast.error('Выберите сроки')
+    return
+  }
+  const startDate = dates.value[0]
+  const endDate = dates.value[1]
+
+  if (from.value === to.value) {
+    toast.error('Страна отправления и страна прибытия не могут быть одинаковы')
+    return
+  }
+
+  if (!endDate) {
+    toast.error('Выберите дату прибытия')
+    return
+  }
+
+  if (startDate === endDate) {
+    toast.error('Сроки не могут быть одинаковы')
+    return
+  }
+
+  searchParams.countryFrom = from.value
+  searchParams.countryTo = to.value
+  searchParams.startDate = startDate.toLocaleDateString('ru-RU')
+  searchParams.endDate = endDate.toLocaleDateString('ru-RU')
+}
+
+const search = async () => {
+
+}
 </script>
 
 <template>
