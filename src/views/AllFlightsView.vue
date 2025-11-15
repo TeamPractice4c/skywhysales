@@ -19,8 +19,8 @@ const route = useRoute()
 const router = useRouter()
 
 const searchParams = ref({
-  countryFrom: '',
-  countryTo: '',
+  cityFrom: '',
+  cityTo: '',
   startDate: null,
   endDate: null,
 })
@@ -35,8 +35,8 @@ const search = async (params) => {
     return
   }
   await flightStore.searchFlights(
-    params.countryFrom,
-    params.countryTo,
+    params.cityFrom,
+    params.cityTo,
     params.startDate,
     params.endDate,
   )
@@ -47,12 +47,11 @@ const search = async (params) => {
 }
 
 onMounted(async () => {
-  if (route.query.countryFrom) {
-    searchParams.value.countryFrom = route.query.countryFrom
-    searchParams.value.countryTo = route.query.countryTo
+  if (route.query.cityFrom) {
+    searchParams.value.cityFrom = route.query.cityFrom
+    searchParams.value.cityTo = route.query.cityTo
     searchParams.value.startDate = new Date(route.query.startDate)
     searchParams.value.endDate = new Date(route.query.endDate)
-
     await search(searchParams.value)
   } else {
     if (!flightStore.flightsList.length) {
@@ -90,13 +89,8 @@ const searchFlights = async () => {
   const startDate = dates.value[0]
   const endDate = dates.value[1]
 
-  if (from.value === to.value) {
-    toast.error('Страна отправления и страна прибытия не могут быть одинаковы')
-    return
-  }
-
   if (!endDate) {
-    toast.error('Выберите дату прибытия')
+    toast.error('Выберите дату прилета')
     return
   }
 
@@ -105,8 +99,8 @@ const searchFlights = async () => {
     return
   }
 
-  searchParams.value.countryFrom = from.value
-  searchParams.value.countryTo = to.value
+  searchParams.value.cityFrom = from.value
+  searchParams.value.cityTo = to.value
   searchParams.value.startDate = startDate
   searchParams.value.endDate = endDate
 
@@ -141,7 +135,7 @@ const showAll = async () => {
         :time-config="{ enableTimePicker: false }"
         :min-date="Date.now()"
         :locale="ru"
-        placeholder="Сроки полета"
+        placeholder="Сроки вылета"
       />
       <button type="button" @click="searchFlights">Найти</button>
       <datalist id="countries">

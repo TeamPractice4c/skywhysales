@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import axios from 'axios'
+import moment from 'moment'
 
 const useFlightStore = defineStore('flights', () => {
   const currentFlight = ref(null)
@@ -80,10 +81,10 @@ const useFlightStore = defineStore('flights', () => {
   const searchFlights = async (from, to, start, end) => {
     await axios
       .post('http://localhost:3000/api/flight/SearchFlights', {
-        countryFrom: from,
-        countryTo: to,
-        startDate: start.toISOString().split('T')[0],
-        endDate: end.toISOString().split('T')[0],
+        cityFrom: from,
+        cityTo: to,
+        startDate: moment(start).add(5, 'h').toDate().toISOString().split('T')[0],
+        endDate: moment(end).add(5, 'h').toDate().toISOString().split('T')[0],
       })
       .then(async (res) => {
         flightsList.value = Object.keys(res.data).map((key) => {

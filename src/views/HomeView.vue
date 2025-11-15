@@ -27,11 +27,6 @@ const searchFlights = () => {
   const startDate = dates.value[0]
   const endDate = dates.value[1]
 
-  if (from.value === to.value) {
-    toast.error('Страна отправления и страна прибытия не могут быть одинаковы')
-    return
-  }
-
   if (!endDate) {
     toast.error('Выберите дату прибытия')
     return
@@ -43,8 +38,8 @@ const searchFlights = () => {
   }
 
   const searchProps = {
-    countryFrom: from.value,
-    countryTo: to.value,
+    cityFrom: from.value,
+    cityTo: to.value,
     startDate: startDate.toLocaleDateString('en-US'),
     endDate: endDate.toLocaleDateString('en-US'),
   }
@@ -52,8 +47,8 @@ const searchFlights = () => {
   router.push({
     name: 'Flights',
     query: {
-      countryFrom: searchProps.countryFrom,
-      countryTo: searchProps.countryTo,
+      cityFrom: searchProps.cityFrom,
+      cityTo: searchProps.cityTo,
       startDate: searchProps.startDate,
       endDate: searchProps.endDate,
     },
@@ -83,7 +78,7 @@ const searchFlights = () => {
           :time-config="{ enableTimePicker: false }"
           :min-date="Date.now()"
           :locale="ru"
-          placeholder="Сроки полета"
+          placeholder="Сроки вылета"
         />
         <button type="button" @click="searchFlights">Найти</button>
         <datalist id="countries">
