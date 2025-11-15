@@ -32,6 +32,21 @@ const useFlightStore = defineStore('flights', () => {
       .catch((err) => getError(err))
   }
 
+  const getCurrentFlights = async () => {
+    await axios
+      .get('http://localhost:3000/api/flight/GetCurrentFlights')
+      .then((res) => {
+        flightsList.value = Object.keys(res.data).map((key) => {
+          return {
+            id: key,
+            ...res.data[key],
+          }
+        })
+        flightError.value = null
+      })
+      .catch((err) => getError(err))
+  }
+
   const getFlight = async (id) => {
     await axios
       .get(`http://localhost:3000/api/flight/GetFlight/${id}`)
@@ -106,6 +121,7 @@ const useFlightStore = defineStore('flights', () => {
     flightError,
     flightsList,
     getFlights,
+    getCurrentFlights,
     getFlight,
     addFlight,
     editFlight,

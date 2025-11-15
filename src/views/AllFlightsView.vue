@@ -6,12 +6,15 @@ import { useToast } from 'vue-toastification'
 import { ru } from 'date-fns/locale'
 import { useRoute, useRouter } from 'vue-router'
 import FlightCard from '@/components/flight-card.vue'
+import useAirportStore from '@/stores/airport.js'
 
 const toast = useToast()
 const flightStore = useFlightStore()
 const airlineStore = useAirlineStore()
+const airportStore = useAirportStore()
 
 const dates = ref()
+const cities = ref([])
 const fromInput = useTemplateRef('from-input')
 const toInput = useTemplateRef('to-input')
 
@@ -55,18 +58,26 @@ onMounted(async () => {
     await search(searchParams.value)
   } else {
     if (!flightStore.flightsList.length) {
-      await flightStore.getFlights()
+      await flightStore.getCurrentFlights()
     }
   }
   if (flightStore.flightError) {
     toast.error(flightStore.flightError)
   }
-
+  if (!airportStore.airportsList.length) {
+    await airportStore.getAirports()
+  }
+  if (airportStore.airportError) {
+    toast.error(airportStore.airportError)
+  }
   if (!airlineStore.airlinesList.length) {
     await airlineStore.getAirlines()
   }
   if (airlineStore.airlineError) {
     toast.error(airlineStore.airlineError)
+  }
+  if (!cities.value.length) {
+    cities.value = await airportStore.getCities()
   }
 })
 
@@ -108,7 +119,7 @@ const searchFlights = async () => {
 }
 
 const showAll = async () => {
-  await flightStore.getFlights()
+  await flightStore.getCurrentFlights()
   fromInput.value.value = ''
   toInput.value.value = ''
   dates.value = null
@@ -139,28 +150,7 @@ const showAll = async () => {
       />
       <button type="button" @click="searchFlights">Найти</button>
       <datalist id="countries">
-        <option value="Азербайджан" />
-        <option value="Алжир" />
-        <option value="Армения" />
-        <option value="Бахрейн" />
-        <option value="Беларусь" />
-        <option value="Венесуэла" />
-        <option value="Израиль" />
-        <option value="Индия" />
-        <option value="Ирак" />
-        <option value="Казахстан" />
-        <option value="Катар" />
-        <option value="Киргизия" />
-        <option value="Марокко" />
-        <option value="Монголия" />
-        <option value="ОАЭ" />
-        <option value="Россия" />
-        <option value="Сербия" />
-        <option value="Сирия" />
-        <option value="Таджикистан" />
-        <option value="Туркменистан" />
-        <option value="Турция" />
-        <option value="Узбекистан" />
+        <option v-for="el in cities" :value="el"/>
       </datalist>
     </div>
     <div class="additional-filters">
@@ -175,7 +165,7 @@ const showAll = async () => {
       <div class="flights-output">
         <flight-card v-for="el in flightStore.flightsList" @click="toFlight(el.fId)" :flight="el" />
       </div>
-      <button class="search-all" type="button" @click="showAll">Посмотреть все</button>
+      <button v-if="searchParams.cityFrom" class="search-all" type="button" @click="showAll">Посмотреть все</button>
     </div>
   </div>
 </template>
@@ -198,11 +188,6 @@ input::-webkit-calendar-picker-indicator {
   height: 5vh;
   padding-left: 40px;
 }
-/*
-.search-filters div {
-  min-width: 20vw;
-  height: 5vh;
-}*/
 </style>
 
 <style scoped>

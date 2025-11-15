@@ -87,6 +87,13 @@ const useAirportStore = defineStore('airports', () => {
       .catch((err) => getError(err))
   }
 
+  const getCities = async () => {
+    if (!airportsList.value.length) {
+      await getAirports()
+    }
+    return [...new Set(Object.keys(airportsList.value).map((key) => airportsList.value[key].apCity))]
+  }
+
   return {
     currentAirport,
     airportError,
@@ -96,6 +103,7 @@ const useAirportStore = defineStore('airports', () => {
     addAirport,
     editAirport,
     deleteAirport,
+    getCities
   }
 })
 

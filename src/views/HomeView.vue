@@ -124,7 +124,6 @@ input::-webkit-calendar-picker-indicator {
   border: 1px solid #cbd4e6;
   border-radius: 4px;
   font-size: 16px;
-  width: 25vw;
   height: 5vh;
   padding-left: 40px;
 }
@@ -137,6 +136,10 @@ input::-webkit-calendar-picker-indicator {
   padding: 0;
 }
 
+.search-filters button:hover {
+  cursor: pointer;
+}
+
 .search {
   position: relative;
   display: flex;
@@ -146,6 +149,8 @@ input::-webkit-calendar-picker-indicator {
   background-image: url(../assets/images/mainbg.png);
   width: auto;
   height: 100vh;
+  padding: 24px;
+  gap: 16px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -167,10 +172,10 @@ input::-webkit-calendar-picker-indicator {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 75vw;
   border-radius: 6px;
   padding: 24px;
   z-index: 0;
+  width: auto;
 }
 
 .search-options button {
@@ -185,5 +190,9 @@ input::-webkit-calendar-picker-indicator {
 
 .search-options button:hover {
   cursor: pointer;
+}
+
+.datepicker {
+  width: 20vw;
 }
 </style>
