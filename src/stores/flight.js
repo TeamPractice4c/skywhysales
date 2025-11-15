@@ -78,12 +78,13 @@ const useFlightStore = defineStore('flights', () => {
   }
 
   const searchFlights = async (from, to, start, end) => {
-    await axios.post('http://localhost:3000/api/flight/SearchFlights', {
-      countryFrom: from,
-      countryTo: to,
-      startDate: start.toISOString().split('T')[0],
-      endDate: end.toISOString().split('T')[0],
-    })
+    await axios
+      .post('http://localhost:3000/api/flight/SearchFlights', {
+        countryFrom: from,
+        countryTo: to,
+        startDate: start.toISOString().split('T')[0],
+        endDate: end.toISOString().split('T')[0],
+      })
       .then(async (res) => {
         flightsList.value = Object.keys(res.data).map((key) => {
           return {
@@ -95,7 +96,21 @@ const useFlightStore = defineStore('flights', () => {
       .catch((err) => getError(err))
   }
 
-  return { currentFlight, flightError, flightsList, getFlights, getFlight, addFlight, editFlight, searchFlights }
+  const clearFlights = () => {
+    flightsList.value = []
+  }
+
+  return {
+    currentFlight,
+    flightError,
+    flightsList,
+    getFlights,
+    getFlight,
+    addFlight,
+    editFlight,
+    searchFlights,
+    clearFlights,
+  }
 })
 
 export default useFlightStore

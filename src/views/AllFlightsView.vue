@@ -1,7 +1,7 @@
 <script setup>
 import useFlightStore from '@/stores/flight.js'
 import useAirlineStore from '@/stores/airline.js'
-import { onMounted, ref, useTemplateRef } from 'vue'
+import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
 import { useToast } from 'vue-toastification'
 import { ru } from 'date-fns/locale'
 import { useRoute, useRouter } from 'vue-router'
@@ -31,7 +31,7 @@ const toFlight = (id) => {
 
 const search = async (params) => {
   if (!params) {
-    toast.error('Гандон')
+    toast.error('Отсутствуют параметры поиска')
     return
   }
   await flightStore.searchFlights(
@@ -40,10 +40,14 @@ const search = async (params) => {
     params.startDate,
     params.endDate,
   )
+
+  if (flightStore.flightError) {
+    toast.error(flightStore.flightError)
+  }
 }
 
 onMounted(async () => {
-  if (route.query) {
+  if (route.query.countryFrom) {
     searchParams.value.countryFrom = route.query.countryFrom
     searchParams.value.countryTo = route.query.countryTo
     searchParams.value.startDate = new Date(route.query.startDate)
@@ -65,6 +69,10 @@ onMounted(async () => {
   if (airlineStore.airlineError) {
     toast.error(airlineStore.airlineError)
   }
+})
+
+onBeforeUnmount(() => {
+  flightStore.clearFlights()
 })
 
 const searchFlights = async () => {
@@ -97,12 +105,19 @@ const searchFlights = async () => {
     return
   }
 
-  searchParams.countryFrom = from.value
-  searchParams.countryTo = to.value
-  searchParams.startDate = startDate.toLocaleDateString('ru-RU')
-  searchParams.endDate = endDate.toLocaleDateString('ru-RU')
+  searchParams.value.countryFrom = from.value
+  searchParams.value.countryTo = to.value
+  searchParams.value.startDate = startDate
+  searchParams.value.endDate = endDate
 
-  await search(searchParams)
+  await search(searchParams.value)
+}
+
+const showAll = async () => {
+  await flightStore.getFlights()
+  fromInput.value.value = ''
+  toInput.value.value = ''
+  dates.value = null
 }
 </script>
 
@@ -166,7 +181,7 @@ const searchFlights = async () => {
       <div class="flights-output">
         <flight-card v-for="el in flightStore.flightsList" @click="toFlight(el.fId)" :flight="el" />
       </div>
-      <button class="search-all" type="button">Посмотреть все</button>
+      <button class="search-all" type="button" @click="showAll">Посмотреть все</button>
     </div>
   </div>
 </template>
@@ -189,11 +204,11 @@ input::-webkit-calendar-picker-indicator {
   height: 5vh;
   padding-left: 40px;
 }
-
+/*
 .search-filters div {
   min-width: 20vw;
   height: 5vh;
-}
+}*/
 </style>
 
 <style scoped>
@@ -278,6 +293,6 @@ input::-webkit-calendar-picker-indicator {
 }
 
 .datepicker {
-  width: 15vw;
+  width: 20vw;
 }
 </style>
