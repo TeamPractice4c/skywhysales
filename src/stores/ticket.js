@@ -18,7 +18,7 @@ const useTicketStore = defineStore('tickets', () => {
 
   const getTickets = async () => {
     await axios
-      .get('http://localhost:3000/api/tickets/GetTickets')
+      .get('http://localhost:3000/api/ticket/GetTickets')
       .then((res) => {
         ticketsList.value = Object.keys(res.data).map((key) => {
           return {
@@ -34,7 +34,7 @@ const useTicketStore = defineStore('tickets', () => {
 
   const getUserTickets = async (userId) => {
     await axios
-    .get(`http://localhost:3000/api/tickets/GetUserTickets/${userId}`)
+    .get(`http://localhost:3000/api/ticket/GetUserTickets/${userId}`)
     .then((res) => {
       ticketsList.value = Object.keys(res.data).map((key) => {
         return {
@@ -49,7 +49,7 @@ const useTicketStore = defineStore('tickets', () => {
 
   const getTicket = async (id) => {
     await axios
-      .get(`http://localhost:3000/api/tickets/GetTicket/${id}`)
+      .get(`http://localhost:3000/api/ticket/GetTicket/${id}`)
       .then((res) => {
         currentTicket.value = res.data
         ticketError.value = null
@@ -59,7 +59,7 @@ const useTicketStore = defineStore('tickets', () => {
 
   const addTicket = async (ticket) => {
     await axios
-      .post('http://localhost:3000/api/tickets/AddTicket', {
+      .post('http://localhost:3000/api/ticket/AddTicket', {
         tId: 0,
         tFlight: ticket.flightId,
         tUser: `${ticket.userSurname} ${ticket.userName} ${ticket.userPatronymic}`,
@@ -84,7 +84,7 @@ const useTicketStore = defineStore('tickets', () => {
     }
 
     await axios
-      .post('http://localhost:3000/api/tickets/ChangeTicketStatus', ticket)
+      .post('http://localhost:3000/api/ticket/ChangeTicketStatus', ticket)
       .then((res) => {
         if (ticketsList.value.length) {
           const index = ticketsList.value.findIndex((item) => item.id === ticket.id)

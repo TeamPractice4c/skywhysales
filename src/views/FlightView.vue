@@ -27,26 +27,26 @@ onBeforeMount(async () => {
 })
 
 const classMultipliers = {
-  Эконом: 1,
-  Комфорт: 1.5,
-  Бизнес: 2,
+  'Эконом': 1,
+  'Комфорт': 1.5,
+  'Бизнес': 2,
   'Первый класс': 3,
 }
 
 const tariffRules = {
-  Эконом: {
+  'Эконом': {
     handLuggage: { allowed: true, weight: '8 кг', size: '55×23×40 см' },
     baggage: { allowed: false },
     exchange: { allowed: false },
     refund: { allowed: false },
   },
-  Комфорт: {
+  'Комфорт': {
     handLuggage: { allowed: true, weight: '10 кг', size: '55×23×40 см' },
     baggage: { allowed: true, weight: '23 кг', count: 1 },
     exchange: { allowed: true },
     refund: { allowed: false },
   },
-  Бизнес: {
+  'Бизнес': {
     handLuggage: { allowed: true, weight: '15 кг', size: '55×23×40 см' },
     baggage: { allowed: true, weight: '32 кг', count: 2 },
     exchange: { allowed: true },
@@ -85,18 +85,21 @@ const duration = computed(() => {
 
 const buyTicket = async () => {
   if (!flight.value) return
-  if (!userStore.currentUser) { toast.error("Войдите в аккаунт") }
+  if (!userStore.currentUser) {
+    toast.error("Войдите в аккаунт")
+    return
+  }
 
   const ticketData = {
     tId: 0,
-    tFlight: flight.value.fId,
-    tUser: userStore.currentUser.uId,
-    tBoughtDate: new Date().toISOString().split('T')[0],
-    tClass: currentTariff,
-    tTotalPrice: finalPrice,
-    tStatus: 'Куплен',
+    flightId: flight.value.fId,
+    userSurname: userStore.currentUser.uSurname,
+    userName: userStore.currentUser.uName,
+    userPatronymic: userStore.currentUser.uPatronymic,
+    class: selectedClass.value,
+    price: finalPrice.value,
   }
-
+  console.log('Отправляем билет:', ticketData)
   await ticketStore.addTicket(ticketData)
 
   if (ticketStore.ticketError) {
