@@ -1,16 +1,21 @@
 <script setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useToast } from 'vue-toastification'
 import useFlightStore from '@/stores/flight.js'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
+import useTicketStore from '@/stores/ticket.js'
+import useUserStore from '@/stores/user.js'
 
 const flightStore = useFlightStore()
+const ticketStore = useTicketStore()
+const userStore = useUserStore()
 const route = useRoute()
 const toast = useToast()
 
 const flightId = Number(route.params.id)
+const selectedClass = ref('Эконом')
 
 onBeforeMount(async () => {
   if (!flightStore.currentFlight) {
@@ -21,7 +26,48 @@ onBeforeMount(async () => {
   }
 })
 
+const classMultipliers = {
+  Эконом: 1,
+  Комфорт: 1.5,
+  Бизнес: 2,
+  'Первый класс': 3,
+}
+
+const tariffRules = {
+  Эконом: {
+    handLuggage: { allowed: true, weight: '8 кг', size: '55×23×40 см' },
+    baggage: { allowed: false },
+    exchange: { allowed: false },
+    refund: { allowed: false },
+  },
+  Комфорт: {
+    handLuggage: { allowed: true, weight: '10 кг', size: '55×23×40 см' },
+    baggage: { allowed: true, weight: '23 кг', count: 1 },
+    exchange: { allowed: true },
+    refund: { allowed: false },
+  },
+  Бизнес: {
+    handLuggage: { allowed: true, weight: '15 кг', size: '55×23×40 см' },
+    baggage: { allowed: true, weight: '32 кг', count: 2 },
+    exchange: { allowed: true },
+    refund: { allowed: true },
+  },
+  'Первый класс': {
+    handLuggage: { allowed: true, weight: '15 кг', size: '55×23×40 см' },
+    baggage: { allowed: true, weight: '32 кг', count: 3 },
+    exchange: { allowed: true },
+    refund: { allowed: true },
+  },
+}
+
+const currentTariff = computed(() => tariffRules[selectedClass.value])
 const flight = computed(() => flightStore.currentFlight)
+const finalPrice = computed(() => {
+  if (!flight.value) return 0
+  const basePrice = flight.value.fPrice
+  const multiplier = classMultipliers[selectedClass.value]
+  return Math.round(basePrice * multiplier)
+})
 
 const formatTime = (date) => format(new Date(date), 'HH:mm', { locale: ru })
 const formatDate = (date) => format(new Date(date), 'd MMM', { locale: ru })
@@ -36,22 +82,77 @@ const duration = computed(() => {
   const m = diff % 60
   return `${h}ч ${m}м в полёте`
 })
+
+const buyTicket = async () => {
+  if (!flight.value) return
+  if (!userStore.currentUser) { toast.error("Войдите в аккаунт") }
+
+  const ticketData = {
+    tId: 0,
+    tFlight: flight.value.fId,
+    tUser: userStore.currentUser.uId,
+    tBoughtDate: new Date().toISOString().split('T')[0],
+    tClass: currentTariff,
+    tTotalPrice: finalPrice,
+    tStatus: 'Куплен',
+  }
+
+  await ticketStore.addTicket(ticketData)
+
+  if (ticketStore.ticketError) {
+    toast.error(ticketStore.ticketError)
+  } else {
+    toast.success('Билет успешно оформлен!')
+  }
+}
 </script>
 
 <template>
   <div class="flight-detail-page">
+    <div class="class-selector">
+      <h3>Класс обслуживания</h3>
+      <div class="class-options">
+        <label v-for="cls in ['Эконом', 'Комфорт', 'Бизнес', 'Первый класс']" :key="cls">
+          <input type="radio" v-model="selectedClass" :value="cls" name="flightClass" />
+          <span>{{ cls }}</span>
+          <span class="price-preview" v-if="flight">
+            {{ Math.round(flight.fPrice * classMultipliers[cls]) }} ₽
+          </span>
+        </label>
+      </div>
+    </div>
     <div class="tariff-card">
       <h3>Условия тарифа</h3>
       <ul>
         <li>
-          <span class="check green">Checkmark</span> Ручная кладь 8 кг — 1 шт
-          <span class="size">55×23×40 см</span>
+          <span :class="['check', currentTariff.handLuggage.allowed ? 'green' : 'cross']">
+            {{ currentTariff.handLuggage.allowed ? '✔️' : '❌' }}
+          </span>
+          Ручная кладь {{ currentTariff.handLuggage.weight }} — 1 шт
+          <span class="size">{{ currentTariff.handLuggage.size }}</span>
         </li>
-        <li><span class="cross">Cross</span> Без багажа</li>
-        <li><span class="cross">Cross</span> Без обмена</li>
-        <li><span class="cross">Cross</span> Без возврата</li>
+        <li>
+          <span :class="['check', currentTariff.baggage.allowed ? 'green' : 'cross']">
+            {{ currentTariff.baggage.allowed ? '✔️' : '❌' }}
+          </span>
+          Багаж
+          <template v-if="currentTariff.baggage.allowed">
+            {{ currentTariff.baggage.weight }} — {{ currentTariff.baggage.count }} шт
+          </template>
+        </li>
+        <li>
+          <span :class="['check', currentTariff.exchange.allowed ? 'green' : 'cross']">
+            {{ currentTariff.exchange.allowed ? '✔️' : '❌' }}
+          </span>
+          Обмен
+        </li>
+        <li>
+          <span :class="['check', currentTariff.refund.allowed ? 'green' : 'cross']">
+            {{ currentTariff.refund.allowed ? '✔️' : '❌' }}
+          </span>
+          Возврат
+        </li>
       </ul>
-      <p class="note">Общее количество чемоданов и сумок на всех</p>
     </div>
 
     <div class="route-card">
@@ -90,12 +191,11 @@ const duration = computed(() => {
     <div class="prices-card">
       <div class="price-item best">
         <div class="seller">
-          <img src="../assets/icons/logo.svg" alt="Aviasales" class="seller-icon" />
           <span>Напрямую у SkyWhySales</span>
         </div>
         <div class="price-block">
-          <span class="price">{{ flightStore.currentFlight.fPrice }} ₽</span>
-          <button class="buy-btn primary">Купить</button>
+          <span class="price">{{ finalPrice }} ₽</span>
+          <button class="buy-btn primary" @click="buyTicket">Купить</button>
         </div>
       </div>
     </div>
@@ -287,5 +387,42 @@ const duration = computed(() => {
   background: var(--color-purple-blue);
   color: white;
   border: none;
+}
+.class-selector {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.class-selector h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.class-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.class-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.class-options input[type="radio"] {
+  accent-color: #7c3aed;
+}
+
+.price-preview {
+  margin-left: auto;
+  color: #6b7280;
+  font-size: 13px;
 }
 </style>
