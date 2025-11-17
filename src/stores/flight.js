@@ -48,13 +48,16 @@ const useFlightStore = defineStore('flights', () => {
   }
 
   const getFlight = async (id) => {
+    let data = null
     await axios
       .get(`http://localhost:3000/api/flight/GetFlight/${id}`)
       .then((res) => {
         currentFlight.value = res.data
         flightError.value = null
+        data = res.data
       })
       .catch((err) => getError(err))
+    return data
   }
 
   const addFlight = async (flight) => {

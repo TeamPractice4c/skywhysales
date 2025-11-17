@@ -1,12 +1,12 @@
 <script setup>
-import { computed, onBeforeMount, onMounted, ref } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useToast } from 'vue-toastification'
-import useFlightStore from '@/stores/flight.js'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
-import useTicketStore from '@/stores/ticket.js'
+import useFlightStore from '@/stores/flight.js'
 import useUserStore from '@/stores/user.js'
+import useTicketStore from '@/stores/ticket.js'
 
 const flightStore = useFlightStore()
 const ticketStore = useTicketStore()
@@ -18,11 +18,9 @@ const flightId = Number(route.params.id)
 const selectedClass = ref('Эконом')
 
 onBeforeMount(async () => {
-  if (!flightStore.currentFlight) {
-    await flightStore.getFlight(flightId)
-    if (flightStore.flightError) {
-      toast.error(flightStore.flightError)
-    }
+  await flightStore.getFlight(flightId)
+  if (flightStore.flightError) {
+    toast.error(flightStore.flightError)
   }
 })
 
@@ -37,25 +35,21 @@ const tariffRules = {
   'Эконом': {
     handLuggage: { allowed: true, weight: '8 кг', size: '55×23×40 см' },
     baggage: { allowed: false },
-    exchange: { allowed: false },
     refund: { allowed: false },
   },
   'Комфорт': {
     handLuggage: { allowed: true, weight: '10 кг', size: '55×23×40 см' },
     baggage: { allowed: true, weight: '23 кг', count: 1 },
-    exchange: { allowed: true },
     refund: { allowed: false },
   },
   'Бизнес': {
     handLuggage: { allowed: true, weight: '15 кг', size: '55×23×40 см' },
     baggage: { allowed: true, weight: '32 кг', count: 2 },
-    exchange: { allowed: true },
     refund: { allowed: true },
   },
   'Первый класс': {
     handLuggage: { allowed: true, weight: '15 кг', size: '55×23×40 см' },
     baggage: { allowed: true, weight: '32 кг', count: 3 },
-    exchange: { allowed: true },
     refund: { allowed: true },
   },
 }
@@ -86,12 +80,11 @@ const duration = computed(() => {
 const buyTicket = async () => {
   if (!flight.value) return
   if (!userStore.currentUser) {
-    toast.error("Войдите в аккаунт")
+    toast.error('Войдите в аккаунт')
     return
   }
 
   const ticketData = {
-    tId: 0,
     flightId: flight.value.fId,
     userSurname: userStore.currentUser.uSurname,
     userName: userStore.currentUser.uName,
@@ -99,14 +92,13 @@ const buyTicket = async () => {
     class: selectedClass.value,
     price: finalPrice.value,
   }
-  console.log('Отправляем билет:', ticketData)
   await ticketStore.addTicket(ticketData)
 
   if (ticketStore.ticketError) {
     toast.error(ticketStore.ticketError)
-  } else {
-    toast.success('Билет успешно оформлен!')
+    return
   }
+  toast.success('Билет успешно оформлен!')
 }
 </script>
 
@@ -142,12 +134,6 @@ const buyTicket = async () => {
           <template v-if="currentTariff.baggage.allowed">
             {{ currentTariff.baggage.weight }} — {{ currentTariff.baggage.count }} шт
           </template>
-        </li>
-        <li>
-          <span :class="['check', currentTariff.exchange.allowed ? 'green' : 'cross']">
-            {{ currentTariff.exchange.allowed ? '✔️' : '❌' }}
-          </span>
-          Обмен
         </li>
         <li>
           <span :class="['check', currentTariff.refund.allowed ? 'green' : 'cross']">
@@ -245,21 +231,9 @@ const buyTicket = async () => {
 .check {
   font-size: 18px;
 }
-.green {
-  color: #16a34a;
-}
-.cross {
-  color: #dc2626;
-  font-size: 16px;
-}
 .size {
   color: #6b7280;
   font-size: 12px;
-}
-.note {
-  color: #6b7280;
-  font-size: 12px;
-  margin: 12px 0 8px;
 }
 .route-card {
   background: white;
@@ -368,10 +342,6 @@ const buyTicket = async () => {
   gap: 8px;
   font-size: 14px;
 }
-.seller-icon {
-  width: 24px;
-  height: 24px;
-}
 .price-block {
   display: flex;
   align-items: center;
@@ -419,7 +389,7 @@ const buyTicket = async () => {
   cursor: pointer;
 }
 
-.class-options input[type="radio"] {
+.class-options input[type='radio'] {
   accent-color: #7c3aed;
 }
 

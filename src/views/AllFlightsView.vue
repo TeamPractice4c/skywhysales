@@ -91,6 +91,12 @@ const searchFlights = async () => {
 
   if (!from.value || !to.value || !dates.value) {
     toast.error('Заполните все поля')
+    return
+  }
+
+  if (from.value === to.value) {
+    toast.error('Города не могут быть одинаковыми')
+    return
   }
 
   if (!dates.value) {

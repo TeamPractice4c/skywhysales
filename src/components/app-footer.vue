@@ -1,23 +1,12 @@
-<script setup></script>
-
 <template>
   <div class="footer">
     <div class="footer-content">
-      <div>
-        <img src="../assets/icons/logo.svg" alt="" />
-      </div>
-      <div class="about">
-        <p style="color: #6e7491; font-weight: bold">О нас</p>
-        <p>О SkyWhySales</p>
-        <p>Как это работает</p>
-        <p>Карьера</p>
-      </div>
+        <img src="../assets/icons/logo.svg" alt="" width="200"/>
       <div class="support">
-        <p style="color: #6e7491; font-weight: bold">Поддержка</p>
         <p>Связаться с нами</p>
-        <p>Политика конфиденциальности</p>
-        <p>Условия обслуживания</p>
-        <p>Доверие и безопасность</p>
+        <a href="mailto:ksebija@gmail.com">ksebija@gmail.com</a>
+        <a href="mailto:aidarfaiza@gmail.com">aidarfaiza@gmail.com</a>
+        <p></p>
       </div>
     </div>
     <div class="copyright">
@@ -27,8 +16,13 @@
 </template>
 
 <style scoped>
-p {
+a {
   color: var(--color-grey-400);
+  text-decoration: none;
+}
+p {
+  color: var(--color-grey-600);
+  font-weight: bold;
 }
 .footer {
   display: flex;
@@ -37,7 +31,18 @@ p {
 .footer-content {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-evenly;
   padding: 60px;
+}
+.footer-content img {
+  justify-self: center;
+}
+.support {
+  display: flex;
+  flex-direction: column;
+}
+.copyright p {
+  color: var(--color-grey-400);
+  font-weight: normal;
 }
 </style>

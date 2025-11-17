@@ -31,6 +31,15 @@ const goToUser = () => {
     },
   })
 }
+
+const goToUserFlights = () => {
+  router.push({
+    name: 'UserFlights',
+    params: {
+      id: store.currentUser.uId,
+    },
+  })
+}
 </script>
 
 <template>
@@ -40,7 +49,14 @@ const goToUser = () => {
     </router-link>
     <div class="header-actions">
       <p class="action" @click="goToFlights" :class="{ active: route.name === 'Flights' }">Рейсы</p>
-      <p class="action" v-if="store.currentUser">Мои рейсы</p>
+      <p
+        class="action"
+        v-if="store.currentUser"
+        :class="{ active: route.name === 'UserFlights' }"
+        @click="goToUserFlights"
+      >
+        Мои рейсы
+      </p>
       <p class="action" v-else @click="showAuth = true">Войти</p>
       <p
         class="action"

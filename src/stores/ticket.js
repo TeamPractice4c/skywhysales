@@ -26,25 +26,24 @@ const useTicketStore = defineStore('tickets', () => {
             ...res.data[key],
           }
         })
-          ticketError.value = null
-      }
-      )
+        ticketError.value = null
+      })
       .catch((err) => getError(err))
   }
 
   const getUserTickets = async (userId) => {
     await axios
-    .get(`http://localhost:3000/api/ticket/GetUserTickets/${userId}`)
-    .then((res) => {
-      ticketsList.value = Object.keys(res.data).map((key) => {
-        return {
-          id: key,
-          ...res.data[key],
-        }
+      .get(`http://localhost:3000/api/ticket/GetUserTickets/${userId}`)
+      .then((res) => {
+        ticketsList.value = Object.keys(res.data).map((key) => {
+          return {
+            id: key,
+            ...res.data[key],
+          }
+        })
+        ticketError.value = null
       })
-      ticketError.value = null
-    })
-    .catch((err) => getError(err))
+      .catch((err) => getError(err))
   }
 
   const getTicket = async (id) => {
@@ -74,7 +73,7 @@ const useTicketStore = defineStore('tickets', () => {
         }
         ticketError.value = null
       })
-    .catch((err) => getError(err))
+      .catch((err) => getError(err))
   }
 
   const changeTicketStatus = async (ticket, user) => {

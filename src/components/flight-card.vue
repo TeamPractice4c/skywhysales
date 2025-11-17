@@ -68,6 +68,7 @@ const getFlightTime = (arrivalTime, departureTime) => {
   background: white;
   justify-content: space-around;
   align-items: center;
+  padding-left: 50px;
 }
 
 .flight-card div {

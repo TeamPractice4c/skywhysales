@@ -33,6 +33,12 @@ const router = createRouter({
       name: 'Flight',
       component: () => import('../views/FlightView.vue'),
     },
+    {
+      path: '/users/:id/flights',
+      name: 'UserFlights',
+      component: () => import('../views/UserFlights.vue'),
+      meta: { isLoginNeeded: true },
+    },
   ],
 })
 

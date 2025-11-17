@@ -36,7 +36,9 @@ const signIn = async () => {
   }
   await store.login(user)
   if (store.currentUser) {
-    await router.push({ name: 'Home' })
+    if (route.name === 'SignUp') {
+      await router.push({ name: 'Home' })
+    }
     emit('close')
   } else if (store.userError) {
     toast.error(store.userError)

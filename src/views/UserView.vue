@@ -1,39 +1,3 @@
-<!--<script setup>
-import { useToast } from 'vue-toastification'
-import useUserStore from '@/stores/user.js'
-import { useRouter } from 'vue-router'
-
-const toast = useToast()
-const store = useUserStore()
-const router = useRouter()
-
-console.log(store.currentUser)
-
-const Logout = () => {
-  //store.currentUser = null
-  router.push({ name: 'Home' })
-}
-</script>
-
-<template>
-  <div>
-    <h3>Регистрация</h3>
-    <p ref="surname">Фамилия: </p>
-    <p ref="name">Имя: </p>
-    <p ref="patronymic">Отчество: </p>
-    <p ref="email">Email: </p>
-    <p ref="phone">Телефон: </p>
-    <p ref="birthdate">Дата рождения:</p>
-    <p ref="serial-input">Серия паспорта</p>
-    <p ref="number-input">Номер паспорта</p>
-    <div class="actions">
-      <button type="button" class="btn" @click="Logout">Выйти</button>
-    </div>
-  </div>
-</template>
-
-<style scoped></style>-->
-
 <script setup>
 import { ref, onMounted, useTemplateRef } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'

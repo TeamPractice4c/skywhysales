@@ -9,9 +9,10 @@ const toast = useToast()
 onMounted(async () => {
   if (localStorage.getItem('user')) {
     await userStore.login({})
-  }
-  if (userStore.userError) {
-    toast.error(userStore.userError)
+
+    if (userStore.userError) {
+      toast.error(userStore.userError)
+    }
   }
 })
 </script>
