@@ -39,6 +39,12 @@ const router = createRouter({
       component: () => import('../views/UserFlights.vue'),
       meta: { isLoginNeeded: true },
     },
+    {
+      path: '/admin',
+      name: 'Admin',
+      component: () => import('@/views/AdminView.vue'),
+      meta: { requiresAuth: true }
+    },
   ],
 })
 

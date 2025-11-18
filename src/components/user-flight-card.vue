@@ -86,61 +86,59 @@ const cancelTicket = async () => {
 </template>
 
 <style scoped>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: --font-family-nunito-sans, sans-serif;
+}
 .user-flight-card {
   display: flex;
-  flex-direction: row;
-  background: white;
-  justify-content: space-around;
   align-items: center;
-  width: 100%;
-  padding-left: 50px;
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+  background: white;
 }
 
-.user-flight-card div {
-  align-self: center;
-  height: auto;
-  width: 15vw;
+/* Жёстко задаём ширину каждой колонки — и всё влезет */
+.user-flight-card > *:nth-child(1) { flex: 0 0 80px;  text-align: center; }     /* логотип */
+.user-flight-card > *:nth-child(2) { flex: 0 0 130px; }                       /* авиакомпания */
+.user-flight-card > *:nth-child(3) { flex: 0 0 380px; margin: 0 auto }                       /* маршрут + дата ← САМАЯ ШИРОКАЯ */
+.user-flight-card > *:nth-child(4) { flex: 0 0 140px; text-align: center; }   /* цена */
+.user-flight-card > *:nth-child(5) { flex: 0 0 120px; text-align: center; }   /* статус */
+.user-flight-card > *:nth-child(6) { flex: 0 0 150px; text-align: right; padding-right: 30px; } /* кнопка */
+
+.user-flight-card img {
+  width: 40px;
+  height: 40px;
+  display: block;
 }
+
+.primary, .secondary {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.primary { font-weight: 600; }
+.secondary { color: #888; font-size: 0.9rem; margin-top: 4px; }
 
 .btn {
   background: var(--color-purple-blue);
-  color: var(--color-grey-100);
-  padding: 10px 20px;
+  color: white;
+  padding: 10px 24px;
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
+  border-radius: 8px;
   cursor: pointer;
-  transition: 0.2s;
+  white-space: nowrap;
 }
 
 .btn-disabled {
-  background: var(--color-grey-400);
-  color: black;
-}
-
-.btn-disabled:hover {
-  cursor: default;
-}
-
-.user-flight-card p {
-  text-align: center;
+  background: #ccc;
+  cursor: not-allowed;
 }
 
 .user-flight-card:hover {
   background: var(--color-purple-white);
-}
-
-.user-flight-card img {
-  align-self: center;
-}
-
-.primary {
-  color: var(--color-grey-900);
-  text-wrap: nowrap;
-}
-
-.secondary {
-  color: var(--color-grey-400);
-  text-wrap: nowrap;
 }
 </style>

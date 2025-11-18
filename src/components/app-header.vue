@@ -40,6 +40,15 @@ const goToUserFlights = () => {
     },
   })
 }
+
+const goToAdmin = () => {
+  router.push({ name: 'Admin' })
+}
+
+const isManager = () => {
+  const role = store.currentUser?.uRole
+  return role === 'Менеджер' || role === 'admin'
+}
 </script>
 
 <template>
@@ -48,6 +57,15 @@ const goToUserFlights = () => {
       <img style="justify-self: flex-start" src="../assets/icons/logo.svg" alt="" />
     </router-link>
     <div class="header-actions">
+      <button
+        v-if='isManager()'
+        type="button"
+        class="action admin-btn"
+        @click="goToAdmin"
+        title="Админ-панель"
+      >
+        Админ-панель
+      </button>
       <p class="action" @click="goToFlights" :class="{ active: route.name === 'Flights' }">Рейсы</p>
       <p
         class="action"

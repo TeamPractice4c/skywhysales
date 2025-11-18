@@ -19,8 +19,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="user-flights">
-    <user-flight-card v-for="el in ticketStore.ticketsList" :flightId="el.tFlight" :ticket="el" />
+  <div class="tickets-wrapper">
+    <div class="tickets-table">
+      <user-flight-card
+        v-for="el in ticketStore.ticketsList"
+        :key="el.id"
+        :flightId="el.tFlight"
+        :ticket="el"
+      />
+    </div>
   </div>
 </template>
 
@@ -29,26 +36,32 @@ onMounted(async () => {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: --font-family-nunito-sans, sans-serif;
 }
-.user-flights {
+
+.tickets-wrapper {
+  width: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 3px solid var(--color-purple-extralight);
+  border-radius: 8px;
+  margin: 20px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tickets-table {
+  min-width: 850px;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: auto;
 }
 
-.user-flights {
-  border: 3px solid var(--color-purple-extralight);
-  border-radius: 6px;
-  padding: 3px;
+/* Убираем уродский скроллбар на десктопе, но оставляем скролл */
+.tickets-wrapper::-webkit-scrollbar {
+  height: 6px;
 }
-
-.user-flights div {
-  border-bottom: 2px solid var(--color-purple-extralight);
-}
-
-.user-flights div:last-child {
-  border-bottom: none;
+.tickets-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 3px;
 }
 </style>

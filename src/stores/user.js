@@ -157,6 +157,7 @@ const useUserStore = defineStore('users', () => {
     register,
     getUsers,
     getUser,
+    usersList,
     editUser,
     deleteUser,
     logout,
