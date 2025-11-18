@@ -1,16 +1,24 @@
 <script setup>
-import { ref, useTemplateRef } from 'vue'
+import { onMounted, ref, useTemplateRef } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useRouter } from 'vue-router'
 import { ru } from 'date-fns/locale'
+import useAirportStore from '@/stores/airport.js'
 
 const toast = useToast()
-
+const airportStore = useAirportStore()
 const router = useRouter()
 
 const dates = ref()
+const cities = ref([])
 const fromInput = useTemplateRef('from-input')
 const toInput = useTemplateRef('to-input')
+
+onMounted(async () => {
+  if (!cities.value.length) {
+    cities.value = await airportStore.getCities()
+  }
+})
 
 const searchFlights = () => {
   const from = fromInput.value
@@ -88,28 +96,7 @@ const searchFlights = () => {
         />
         <button type="button" @click="searchFlights">Найти</button>
         <datalist id="countries">
-          <option value="Азербайджан" />
-          <option value="Алжир" />
-          <option value="Армения" />
-          <option value="Бахрейн" />
-          <option value="Беларусь" />
-          <option value="Венесуэла" />
-          <option value="Израиль" />
-          <option value="Индия" />
-          <option value="Ирак" />
-          <option value="Казахстан" />
-          <option value="Катар" />
-          <option value="Киргизия" />
-          <option value="Марокко" />
-          <option value="Монголия" />
-          <option value="ОАЭ" />
-          <option value="Россия" />
-          <option value="Сербия" />
-          <option value="Сирия" />
-          <option value="Таджикистан" />
-          <option value="Туркменистан" />
-          <option value="Турция" />
-          <option value="Узбекистан" />
+          <option v-for="el in cities" :value="el"/>
         </datalist>
       </div>
     </div>

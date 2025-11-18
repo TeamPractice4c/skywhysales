@@ -39,6 +39,7 @@ const signIn = async () => {
     if (route.name === 'SignUp') {
       await router.push({ name: 'Home' })
     }
+    toast.success("Вход прошел успешно")
     emit('close')
   } else if (store.userError) {
     toast.error(store.userError)

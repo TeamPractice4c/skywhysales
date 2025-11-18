@@ -103,6 +103,7 @@ const signUp = async () => {
   }
 
   if (store.currentUser) {
+    toast.success("Регистрация прошла успешно")
     await router.push({ name: 'Home' })
   }
 }

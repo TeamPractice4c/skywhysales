@@ -159,11 +159,6 @@ const showAll = async () => {
         <option v-for="el in cities" :value="el"/>
       </datalist>
     </div>
-    <div class="additional-filters">
-      <p class="additional-filter">Максимальная стоимость</p>
-      <p class="additional-filter">авиакомпании</p>
-      <p class="additional-filter">класс обслуживания</p>
-    </div>
     <p style="color: var(--color-grey-600)">
       Выберите рейс <span style="color: var(--color-purple-blue)">вылета</span>
     </p>

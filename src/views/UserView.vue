@@ -153,7 +153,6 @@ const logout = () => {
 
     <div class="info">
       <p><strong>Email:</strong> {{ store.currentUser?.uEmail }}</p>
-      <p><strong>Роль:</strong> {{ store.currentUser?.uRole || 'Пользователь' }}</p>
     </div>
 
     <div class="form" v-if="isEditing">
