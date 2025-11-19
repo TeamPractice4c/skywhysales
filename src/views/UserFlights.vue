@@ -56,7 +56,6 @@ onMounted(async () => {
   flex-direction: column;
 }
 
-/* Убираем уродский скроллбар на десктопе, но оставляем скролл */
 .tickets-wrapper::-webkit-scrollbar {
   height: 6px;
 }

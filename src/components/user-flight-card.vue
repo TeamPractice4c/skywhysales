@@ -41,7 +41,6 @@ const cancelTicket = async () => {
     }
   }
 }
-
 </script>
 
 <template>
@@ -100,13 +99,30 @@ const cancelTicket = async () => {
   background: white;
 }
 
-/* Жёстко задаём ширину каждой колонки — и всё влезет */
-.user-flight-card > *:nth-child(1) { flex: 0 0 80px;  text-align: center; }     /* логотип */
-.user-flight-card > *:nth-child(2) { flex: 0 0 130px; }                       /* авиакомпания */
-.user-flight-card > *:nth-child(3) { flex: 0 0 380px; margin: 0 auto }                       /* маршрут + дата ← САМАЯ ШИРОКАЯ */
-.user-flight-card > *:nth-child(4) { flex: 0 0 140px; text-align: center; }   /* цена */
-.user-flight-card > *:nth-child(5) { flex: 0 0 120px; text-align: center; }   /* статус */
-.user-flight-card > *:nth-child(6) { flex: 0 0 150px; text-align: right; padding-right: 30px; } /* кнопка */
+.user-flight-card > *:nth-child(1) {
+  flex: 0 0 80px;
+  text-align: center;
+}
+.user-flight-card > *:nth-child(2) {
+  flex: 0 0 130px;
+}
+.user-flight-card > *:nth-child(3) {
+  flex: 0 0 380px;
+  margin: 0 auto;
+}
+.user-flight-card > *:nth-child(4) {
+  flex: 0 0 140px;
+  text-align: center;
+}
+.user-flight-card > *:nth-child(5) {
+  flex: 0 0 120px;
+  text-align: center;
+}
+.user-flight-card > *:nth-child(6) {
+  flex: 0 0 150px;
+  text-align: right;
+  padding-right: 30px;
+}
 
 .user-flight-card img {
   width: 40px;
@@ -114,14 +130,21 @@ const cancelTicket = async () => {
   display: block;
 }
 
-.primary, .secondary {
+.primary,
+.secondary {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.primary { font-weight: 600; }
-.secondary { color: #888; font-size: 0.9rem; margin-top: 4px; }
+.primary {
+  font-weight: 600;
+}
+.secondary {
+  color: #888;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
 
 .btn {
   background: var(--color-purple-blue);

@@ -96,23 +96,29 @@ const useFlightStore = defineStore('flights', () => {
       .catch((err) => getError(err))
   }
 
-  const searchFlights = async (from, to, start, end) => {
+  const searchFlights = async (from, to, start, end, min = -1, max = -1, airline = null) => {
     await axios
       .post('http://localhost:3000/api/flight/SearchFlights', {
         cityFrom: from,
         cityTo: to,
         startDate: moment(start).add(5, 'h').toDate().toISOString().split('T')[0],
         endDate: moment(end).add(5, 'h').toDate().toISOString().split('T')[0],
+        minCost: Number(min),
+        maxCost: Number(max),
       })
-      .then(async (res) => {
+      .then((res) => {
         flightsList.value = Object.keys(res.data).map((key) => {
           return {
             id: key,
             ...res.data[key],
           }
         })
+        flightError.value = null
       })
-      .catch((err) => getError(err))
+      .catch((err) => {
+        getError(err)
+        flightsList.value = []
+      })
   }
 
   const clearFlights = () => {

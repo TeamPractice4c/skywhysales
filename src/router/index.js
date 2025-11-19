@@ -43,19 +43,35 @@ const router = createRouter({
       path: '/admin',
       name: 'Admin',
       component: () => import('@/views/AdminView.vue'),
-      meta: { requiresAuth: true }
+      meta: { isLoginNeeded: true, isAdminPrivileges: true },
     },
   ],
 })
 
-router.beforeEach((to, from) => {
+router.beforeEach(async (to, from) => {
   const userStore = useUserStore()
+
+  if (!userStore.currentUser && localStorage.getItem('user')) {
+    await userStore.login({})
+  }
 
   if (to.meta.isLoginNeeded && !userStore.currentUser) {
     return { name: 'Home' }
   }
 
-  if (to.meta.isLoginNeeded && !to.path.includes(userStore.currentUser.uId)) {
+  if (
+    to.meta.isLoginNeeded &&
+    to.meta.isAdminPrivileges &&
+    userStore.currentUser.uRole !== 'Менеджер'
+  ) {
+    return { name: 'Home' }
+  }
+
+  if (
+    to.meta.isLoginNeeded &&
+    (to.name === 'User' || to.name === 'UserFlights') &&
+    !to.path.includes(userStore.currentUser.uId)
+  ) {
     return { name: 'Home' }
   }
 })

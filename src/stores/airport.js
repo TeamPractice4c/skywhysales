@@ -80,7 +80,7 @@ const useAirportStore = defineStore('airports', () => {
       .then(() => {
         const index = airportsList.value.findIndex((ap) => ap.apId === airportId)
         if (index > -1) {
-          airportsList.value.slice(index, 1)
+          airportsList.value.splice(index, 1)
         }
         airportError.value = null
       })
@@ -94,6 +94,10 @@ const useAirportStore = defineStore('airports', () => {
     return [...new Set(Object.keys(airportsList.value).map((key) => airportsList.value[key].apCity))]
   }
 
+  const clearAirports = () => {
+    airportsList.value = []
+  }
+
   return {
     currentAirport,
     airportError,
@@ -103,7 +107,8 @@ const useAirportStore = defineStore('airports', () => {
     addAirport,
     editAirport,
     deleteAirport,
-    getCities
+    getCities,
+    clearAirports,
   }
 })
 

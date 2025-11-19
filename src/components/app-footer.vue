@@ -41,6 +41,9 @@ p {
   display: flex;
   flex-direction: column;
 }
+.copyright {
+ border-top: 1px solid var(--color-grey-200);
+}
 .copyright p {
   color: var(--color-grey-400);
   font-weight: normal;

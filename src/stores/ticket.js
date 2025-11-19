@@ -96,6 +96,10 @@ const useTicketStore = defineStore('tickets', () => {
       .catch((err) => getError(err))
   }
 
+  const clearTickets = () => {
+    ticketsList.value = []
+  }
+
   return {
     currentTicket,
     ticketError,
@@ -105,6 +109,7 @@ const useTicketStore = defineStore('tickets', () => {
     getTicket,
     addTicket,
     changeTicketStatus,
+    clearTickets,
   }
 })
 

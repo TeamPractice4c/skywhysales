@@ -95,8 +95,7 @@ const signUp = () => {
   color: var(--color-grey-100);
 }
 .modal-btn:hover {
-  background: var(--color-grey-100);
-  color: var(--color-purple-blue);
+  opacity: 0.7;
   transition: 0.5s;
   cursor: pointer;
 }

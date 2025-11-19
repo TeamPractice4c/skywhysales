@@ -76,13 +76,26 @@ const useAirlineStore = defineStore('airlines', () => {
     await axios
       .delete(`http://localhost:3000/api/airline/DeleteAirline/${airlineId}`)
       .then(() => {
-        const index = airlinesList.value.findIndex((al) => al.apId === airlineId)
+        const index = airlinesList.value.findIndex((al) => al.alId === airlineId)
         if (index > -1) {
-          airlinesList.value.slice(index, 1)
+          airlinesList.value.splice(index,1)
         }
         airlineError.value = null
       })
       .catch((err) => getError(err))
+  }
+
+  const getNameAirlines = async () => {
+    if (!airlinesList.value.length) {
+      await getAirlines()
+    }
+    return [
+      ...new Set(Object.keys(airlinesList.value).map((key) => airlinesList.value[key].alName)),
+    ]
+  }
+
+  const clearAirlines = () => {
+    airlinesList.value = []
   }
 
   return {
@@ -94,6 +107,8 @@ const useAirlineStore = defineStore('airlines', () => {
     addAirline,
     editAirline,
     deleteAirline,
+    getNameAirlines,
+    clearAirlines,
   }
 })
 

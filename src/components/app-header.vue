@@ -47,7 +47,7 @@ const goToAdmin = () => {
 
 const isManager = () => {
   const role = store.currentUser?.uRole
-  return role === 'Менеджер' || role === 'admin'
+  return role === 'Менеджер'
 }
 </script>
 
@@ -58,7 +58,7 @@ const isManager = () => {
     </router-link>
     <div class="header-actions">
       <button
-        v-if='isManager()'
+        v-if="isManager()"
         type="button"
         class="action admin-btn"
         @click="goToAdmin"

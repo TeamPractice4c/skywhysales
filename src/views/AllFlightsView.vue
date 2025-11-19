@@ -15,8 +15,13 @@ const airportStore = useAirportStore()
 
 const dates = ref()
 const cities = ref([])
+const airlines = ref([])
+const minCost = ref(0)
+const maxCost = ref(0)
+
 const fromInput = useTemplateRef('from-input')
 const toInput = useTemplateRef('to-input')
+const airlineInput = useTemplateRef('airline-input')
 
 const route = useRoute()
 const router = useRouter()
@@ -26,6 +31,9 @@ const searchParams = ref({
   cityTo: '',
   startDate: null,
   endDate: null,
+  maxCost: 0,
+  minCost: 0,
+  airline: null,
 })
 
 const toFlight = (id) => {
@@ -42,6 +50,9 @@ const search = async (params) => {
     params.cityTo,
     params.startDate,
     params.endDate,
+    params.minCost,
+    params.maxCost !== 0 ? params.maxCost : -1,
+    params.airline,
   )
 
   if (flightStore.flightError) {
@@ -79,6 +90,9 @@ onMounted(async () => {
   if (!cities.value.length) {
     cities.value = await airportStore.getCities()
   }
+  if (!airlines.value.length) {
+    airlines.value = await airlineStore.getNameAirlines()
+  }
 })
 
 onBeforeUnmount(() => {
@@ -88,6 +102,7 @@ onBeforeUnmount(() => {
 const searchFlights = async () => {
   const from = fromInput.value
   const to = toInput.value
+  const airline = airlineInput.value
 
   if (!from.value || !to.value || !dates.value) {
     toast.error('Заполните все поля')
@@ -120,15 +135,33 @@ const searchFlights = async () => {
   searchParams.value.cityTo = to.value
   searchParams.value.startDate = startDate
   searchParams.value.endDate = endDate
+  searchParams.value.minCost = minCost.value
+  searchParams.value.maxCost = maxCost.value
+  searchParams.value.airline = airline.value
 
   await search(searchParams.value)
+  clearInputs()
 }
 
 const showAll = async () => {
   await flightStore.getCurrentFlights()
+  clearInputs()
+}
+
+const clearInputs = () => {
   fromInput.value.value = ''
   toInput.value.value = ''
+  airlineInput.value.value = ''
   dates.value = null
+  minCost.value = 0
+  maxCost.value = 0
+}
+
+const getMaxCost = () => {
+  const costs = Object.keys(flightStore.flightsList).map(
+    (key) => flightStore.flightsList[key].fPrice,
+  )
+  return Math.max(costs)
 }
 </script>
 
@@ -156,17 +189,53 @@ const showAll = async () => {
       />
       <button type="button" @click="searchFlights">Найти</button>
       <datalist id="countries">
-        <option v-for="el in cities" :value="el"/>
+        <option v-for="el in cities" :value="el" />
+      </datalist>
+    </div>
+    <div class="additional-filters">
+      <input
+        class="additional-filter"
+        type="number"
+        :min="0"
+        :max="maxCost"
+        placeholder="От"
+        ref="min-input"
+        v-model="minCost"
+      />
+      <input
+        class="additional-filter"
+        type="number"
+        :min="minCost"
+        :max="getMaxCost()"
+        placeholder="До"
+        ref="max-input"
+        v-model="maxCost"
+      />
+      <input
+        class="additional-filter"
+        type="text"
+        list="airlines"
+        placeholder="Авиакомпании"
+        ref="airline-input"
+      />
+
+      <datalist id="airlines">
+        <option v-for="el in airlines" :value="el" />
       </datalist>
     </div>
     <p style="color: var(--color-grey-600)">
       Выберите рейс <span style="color: var(--color-purple-blue)">вылета</span>
     </p>
     <div class="output">
-      <div class="flights-output">
+      <div class="flights-output" v-if="flightStore.flightsList.length">
         <flight-card v-for="el in flightStore.flightsList" @click="toFlight(el.fId)" :flight="el" />
       </div>
-      <button v-if="searchParams.cityFrom" class="search-all" type="button" @click="showAll">Посмотреть все</button>
+      <p v-else style="text-align: center; color: var(--color-grey-600)">
+        По вашему запросу ничего не найдено
+      </p>
+      <button v-if="searchParams.cityFrom" class="search-all" type="button" @click="showAll">
+        Посмотреть все
+      </button>
     </div>
   </div>
 </template>

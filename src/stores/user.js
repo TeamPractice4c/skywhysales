@@ -134,7 +134,7 @@ const useUserStore = defineStore('users', () => {
         if (usersList.value.length > 0) {
           const index = usersList.value.findIndex((u) => u.uId === userId)
           if (index > -1) {
-            usersList.value.slice(index, 1)
+            usersList.value.splice(index, 1)
           }
         }
         if (currentUser.value.uId === userId) {
@@ -150,6 +150,10 @@ const useUserStore = defineStore('users', () => {
     currentUser.value = null
   }
 
+  function clearUsers() {
+    usersList.value = []
+  }
+
   return {
     currentUser,
     userError,
@@ -161,6 +165,7 @@ const useUserStore = defineStore('users', () => {
     editUser,
     deleteUser,
     logout,
+    clearUsers
   }
 })
 

@@ -21,7 +21,6 @@ const isNew = computed(() => id.value === 'new')
 const form = ref({})
 const loading = ref(false)
 
-// Конфигурация полей для каждой сущности
 const fieldsConfig = {
   flight: [
     { key: 'fDepartureAirport', label: 'Аэропорт отправления', type: 'text' },
@@ -45,10 +44,8 @@ const fieldsConfig = {
   ],
 }
 
-// Текущие поля
 const fields = computed(() => fieldsConfig[entity.value] || [])
 
-// Загрузка данных при редактировании
 const loadEntity = async () => {
   if (isNew.value) {
     form.value = {}
@@ -89,7 +86,6 @@ const loadEntity = async () => {
   }
 }
 
-// Сохранение
 const save = async () => {
   if (loading.value) return
   loading.value = true
@@ -143,7 +139,6 @@ onMounted(() => {
   loadEntity()
 })
 
-// Перезагрузка при смене id/entity
 watch([entity, id], () => {
   loadEntity()
 })
@@ -262,7 +257,7 @@ watch([entity, id], () => {
 .form-group input {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid #cbd4e6;
+  border: 1px solid var(--color-grey-200);
   border-radius: 6px;
   font-size: 16px;
   transition: border 0.2s;
@@ -314,7 +309,7 @@ watch([entity, id], () => {
 .loading {
   text-align: center;
   padding: 60px;
-  color: #7c8db0;
+  color: var(--color-grey-400);
   font-size: 18px;
 }
 </style>
