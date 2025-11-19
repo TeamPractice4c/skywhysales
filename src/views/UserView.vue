@@ -8,6 +8,7 @@ const surnameInput = useTemplateRef('surnameInput')
 const nameInput = useTemplateRef('nameInput')
 const patronymicInput = useTemplateRef('patronymicInput')
 const phoneInput = useTemplateRef('phoneInput')
+const passwordInput = useTemplateRef('passwordInput')
 
 const toast = useToast()
 const router = useRouter()
@@ -21,9 +22,35 @@ onMounted(() => {
   if (phoneInput.value) phoneInput.value.value = store.currentUser.uPhone || ''
 })
 
+const showEditing = () => {
+  const surname = surnameInput.value
+  const name = nameInput.value
+  const patronymic = patronymicInput.value
+  const phone = phoneInput.value
+
+
+  if (isEditing.value) {
+    surname.value = store.currentUser.uSurname || ''
+    name.value = store.currentUser.uName || ''
+    patronymic.value = store.currentUser.uPatronymic || ''
+    phone.value = store.currentUser.uPhone || ''
+  }
+}
+
+const editProfile = () => {
+  isEditing.value = true
+  setTimeout(async () => {
+    showEditing()
+  }, 10)
+}
+
+const cancelEditProfile = () => {
+  isEditing.value = false
+}
+
 onBeforeRouteLeave((to, from, next) => {
   if (isEditing.value) {
-    if (!confirm('Изменения не сохранены, вы уверены что хотите завершить редактировние?')) {
+    if (!confirm('Изменения не сохранены, вы уверены что хотите завершить редактирование?')) {
       next(false)
     }
     next()
@@ -42,6 +69,7 @@ const saveProfile = async () => {
   const name = getValue(nameInput)
   const patronymic = getValue(patronymicInput)
   const phone = getValue(phoneInput)
+  const password = getValue(passwordInput)
 
   if (!surname || !name || !phone) {
     toast.error('Заполните обязательные поля')
@@ -50,8 +78,14 @@ const saveProfile = async () => {
 
   const cleanedPhone = phone.replace(/[\s()\-+]/g, '')
   const phoneRegex = /^(?:\+7|8|7)?(\d{10})$/
+  const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/
   if (!cleanedPhone.match(phoneRegex)) {
     toast.error('Неверный формат телефона')
+    return
+  }
+
+  if (password && !passwordRegex.test(password)) {
+    toast.error('Пароль должен содержать нижний, верхний регистр, число и быть не менее 8 символов')
     return
   }
 
@@ -62,14 +96,14 @@ const saveProfile = async () => {
     uPatronymic: patronymic || '',
     uPhone: phone,
     uRole: '',
-    uPassword: '',
+    uPassword: password || '',
     uEmail: store.currentUser.uEmail,
     uBirthdate: store.currentUser.uBirthdate,
     uPassportSerial: store.currentUser.uPassportSerial,
     uPassportNumber: store.currentUser.uPassportNumber,
   }
 
-  await store.editUser(payload)
+  await store.editUser(payload, !!password)
   if (store.userError) {
     toast.error(store.userError)
   } else {
@@ -160,10 +194,11 @@ const logout = () => {
       <input ref="nameInput" type="text" placeholder="Имя" required />
       <input ref="patronymicInput" type="text" placeholder="Отчество" />
       <input ref="phoneInput" type="text" placeholder="Телефон" required />
+      <input ref="passwordInput" type="password" placeholder="Пароль" />
 
       <div class="actions">
         <button @click="saveProfile" class="btn save">Сохранить</button>
-        <button @click="isEditing = false" class="btn cancel">Отмена</button>
+        <button @click="cancelEditProfile" class="btn cancel">Отмена</button>
       </div>
     </div>
 
@@ -179,7 +214,7 @@ const logout = () => {
       </p>
 
       <div class="actions">
-        <button @click="isEditing = true" class="btn edit">Редактировать профиль</button>
+        <button @click="editProfile" class="btn edit">Редактировать профиль</button>
       </div>
     </div>
 

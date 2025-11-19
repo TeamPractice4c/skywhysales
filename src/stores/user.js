@@ -113,9 +113,22 @@ const useUserStore = defineStore('users', () => {
       .catch((err) => getError(err))
   }
 
-  async function editUser(user) {
+  async function editUser(user, isPasswordEditing) {
     await axios
       .post('http://localhost:3000/api/User/EditUser', user)
+      .then(async (res) => {
+        currentUser.value = res.data
+        userError.value = null
+        if (isPasswordEditing) {
+          await changeUserPassword(user)
+        }
+      })
+      .catch((err) => getError(err))
+  }
+
+  async function changeUserPassword(user) {
+    await axios
+      .post('http://localhost:3000/api/User/ChangePassword', user)
       .then((res) => {
         currentUser.value = res.data
         userError.value = null
@@ -165,7 +178,7 @@ const useUserStore = defineStore('users', () => {
     editUser,
     deleteUser,
     logout,
-    clearUsers
+    clearUsers,
   }
 })
 
