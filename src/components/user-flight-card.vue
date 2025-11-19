@@ -75,10 +75,14 @@ const cancelTicket = async () => {
       <p class="primary">{{ ticket.tStatus }}</p>
       <p class="secondary">Статус</p>
     </div>
-    <div v-if="ticket.tStatus !== 'Отменен'">
+    <div>
+      <p class="primary">{{ ticket.tClass }}</p>
+      <p class="secondary">Класс обслуживания</p>
+    </div>
+    <div v-if="ticket.tStatus !== 'Отменен' && (ticket.tClass === 'Бизнес' || ticket.tClass === 'Первый класс')">
       <button class="btn" type="button" @click="cancelTicket">Отменить</button>
     </div>
-    <div v-else>
+    <div v-else-if="ticket.tStatus === 'Отменен' && (ticket.tClass !== 'Бизнес' || ticket.tClass !== 'Первый класс')">
       <button class="btn btn-disabled" type="button">Отменен</button>
     </div>
   </div>

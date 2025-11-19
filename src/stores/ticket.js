@@ -61,7 +61,7 @@ const useTicketStore = defineStore('tickets', () => {
       .post('http://localhost:3000/api/ticket/AddTicket', {
         tId: 0,
         tFlight: ticket.flightId,
-        tUser: `${ticket.userSurname} ${ticket.userName} ${ticket.userPatronymic}`,
+        tUser: ticket.userEmail,
         tBoughtDate: new Date().toISOString().split('T')[0],
         tClass: ticket.class,
         tTotalPrice: ticket.price,
@@ -86,7 +86,7 @@ const useTicketStore = defineStore('tickets', () => {
       .post('http://localhost:3000/api/ticket/ChangeTicketStatus', ticket)
       .then((res) => {
         if (ticketsList.value.length) {
-          const index = ticketsList.value.findIndex((item) => item.id === ticket.id)
+          const index = ticketsList.value.findIndex((item) => item.tId === ticket.id)
           if (index > -1) {
             ticketsList.value[index] = res.data
           }

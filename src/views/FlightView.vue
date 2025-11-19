@@ -86,9 +86,7 @@ const buyTicket = async () => {
 
   const ticketData = {
     flightId: flight.value.fId,
-    userSurname: userStore.currentUser.uSurname,
-    userName: userStore.currentUser.uName,
-    userPatronymic: userStore.currentUser.uPatronymic,
+    userEmail: userStore.currentUser.uEmail,
     class: selectedClass.value,
     price: finalPrice.value,
   }
