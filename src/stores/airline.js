@@ -45,8 +45,8 @@ const useAirlineStore = defineStore('airlines', () => {
     await axios
       .post(`http://localhost:3000/api/airline/AddAirline`, {
         alId: 0,
-        alName: airline.name,
-        alEmail: airline.email,
+        alName: airline.alName,
+        alEmail: airline.alEmail,
       })
       .then(async (res) => {
         if (airlinesList.value.length) {

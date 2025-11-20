@@ -65,12 +65,12 @@ const useFlightStore = defineStore('flights', () => {
       .post(`http://localhost:3000/api/flight/AddFlight`, {
         fId: 0,
         fAirline: flight.airline,
-        fDepartureAirport: flight.departureAirport,
-        fArrivalAirport: flight.arrivalAirport,
-        fDepartureTime: flight.departureTime,
-        fArrivalTime: flight.arrivalTime,
-        fSeatsCount: flight.seatsCount,
-        fPrice: flight.price,
+        fDepartureAirport: flight.fDepartureAirport,
+        fArrivalAirport: flight.fArrivalAirport,
+        fDepartureTime: flight.fDepartureTime,
+        fArrivalTime: flight.fArrivalTime,
+        fSeatsCount: flight.fSeatsCount,
+        fPrice: flight.fPrice,
       })
       .then(async (res) => {
         if (flightsList.value.length) {

@@ -45,11 +45,11 @@ const useAirportStore = defineStore('airports', () => {
     await axios
       .post(`http://localhost:3000/api/airport/AddAirport`, {
         apId: 0,
-        apName: airport.name,
-        apCountry: airport.country,
-        apCity: airport.city,
-        apStreet: airport.street,
-        apBuilding: airport.building,
+        apName: airport.apName,
+        apCountry: airport.apCountry,
+        apCity: airport.apCity,
+        apStreet: airport.apStreet,
+        apBuilding: airport.apBuilding,
       })
       .then(async (res) => {
         if (airportsList.value.length) {
