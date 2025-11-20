@@ -85,6 +85,9 @@ const cancelTicket = async () => {
     <div v-else-if="ticket.tStatus === 'Отменен' && (ticket.tClass !== 'Бизнес' || ticket.tClass !== 'Первый класс')">
       <button class="btn btn-disabled" type="button">Отменен</button>
     </div>
+    <div v-else style="padding: 10px 24px; min-width: 105px">
+
+    </div>
   </div>
 </template>
 

@@ -77,11 +77,10 @@ const useTicketStore = defineStore('tickets', () => {
   }
 
   const changeTicketStatus = async (ticket, user) => {
-    if (user.uRole !== 'Менеджер') {
+/*    if (user.uRole !== 'Менеджер') {
       ticketError.value = 'Недостаточно прав'
       return
-    }
-
+    }*/
     await axios
       .post('http://localhost:3000/api/ticket/ChangeTicketStatus', ticket)
       .then((res) => {

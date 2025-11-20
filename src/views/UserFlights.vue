@@ -54,6 +54,7 @@ onMounted(async () => {
   width: 100%;
   display: flex;
   flex-direction: column;
+  padding: 10px;
 }
 
 .tickets-wrapper::-webkit-scrollbar {

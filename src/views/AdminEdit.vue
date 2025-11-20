@@ -21,7 +21,6 @@ const isNew = computed(() => id.value === 'new')
 const form = ref({})
 const loading = ref(false)
 
-// Конфигурация полей — теперь с правильными ключами из бэкенда
 const fieldsConfig = {
   flight: [
     { key: 'fDepartureAirport', label: 'Аэропорт отправления', type: 'text' },
@@ -47,7 +46,6 @@ const fieldsConfig = {
 
 const fields = computed(() => fieldsConfig[entity.value] || [])
 
-// Загрузка данных при редактировании
 const loadEntity = async () => {
   if (isNew.value) {
     form.value = {}
@@ -75,7 +73,7 @@ const loadEntity = async () => {
 
     if (!data) {
       toast.error('Объект не найден')
-      router.push('/admin')
+      await router.push('/admin')
       return
     }
 
@@ -88,7 +86,6 @@ const loadEntity = async () => {
   }
 }
 
-// Сохранение
 const save = async () => {
   if (loading.value) return
   loading.value = true
@@ -150,7 +147,7 @@ const save = async () => {
 
     if (success) {
       toast.success(isNew.value ? 'Успешно создано!' : 'Успешно обновлено!')
-      await router.push('/admin') // или router.push('/admin')
+      await router.push('/admin')
     }
   } catch (err) {
     toast.error(flightStore.flightError || airlineStore.airlineError || airportStore.airportError || 'Ошибка сохранения')
@@ -280,7 +277,7 @@ watch(
 }
 
 .form-group {
-  padding: 0px 10px;
+  padding: 0 10px;
 }
 
 .form-group label {

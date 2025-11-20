@@ -22,9 +22,7 @@ onMounted(async () => {
     <app-header />
       <router-view v-slot="{ Component }" >
         <transition name="fade">
-          <keep-alive>
-            <component :is="Component" />
-          </keep-alive>
+          <component :is="Component" />
         </transition>
       </router-view>
     <app-footer />

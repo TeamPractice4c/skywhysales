@@ -103,8 +103,8 @@ const useFlightStore = defineStore('flights', () => {
         cityTo: to,
         startDate: moment(start).add(5, 'h').toDate().toISOString().split('T')[0],
         endDate: moment(end).add(5, 'h').toDate().toISOString().split('T')[0],
-        minCost: Number(min),
-        maxCost: Number(max),
+/*        minCost: Number(min),
+        maxCost: Number(max),*/
       })
       .then((res) => {
         flightsList.value = Object.keys(res.data).map((key) => {

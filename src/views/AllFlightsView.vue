@@ -50,9 +50,9 @@ const search = async (params) => {
     params.cityTo,
     params.startDate,
     params.endDate,
-    params.minCost,
+/*    params.minCost,
     params.maxCost !== 0 ? params.maxCost : -1,
-    params.airline,
+    params.airline,*/
   )
 
   if (flightStore.flightError) {
@@ -135,9 +135,9 @@ const searchFlights = async () => {
   searchParams.value.cityTo = to.value
   searchParams.value.startDate = startDate
   searchParams.value.endDate = endDate
-  searchParams.value.minCost = minCost.value
+/*  searchParams.value.minCost = minCost.value
   searchParams.value.maxCost = maxCost.value
-  searchParams.value.airline = airline.value
+  searchParams.value.airline = airline.value*/
 
   await search(searchParams.value)
   clearInputs()
@@ -151,10 +151,10 @@ const showAll = async () => {
 const clearInputs = () => {
   fromInput.value.value = ''
   toInput.value.value = ''
-  airlineInput.value.value = ''
+  // airlineInput.value.value = ''
   dates.value = null
-  minCost.value = 0
-  maxCost.value = 0
+/*  minCost.value = 0
+  maxCost.value = 0*/
 }
 
 const getMaxCost = () => {
@@ -192,7 +192,7 @@ const getMaxCost = () => {
         <option v-for="el in cities" :value="el" />
       </datalist>
     </div>
-    <div class="additional-filters">
+<!--    <div class="additional-filters">
       <input
         class="additional-filter"
         type="number"
@@ -222,7 +222,7 @@ const getMaxCost = () => {
       <datalist id="airlines">
         <option v-for="el in airlines" :value="el" />
       </datalist>
-    </div>
+    </div>-->
     <p style="color: var(--color-grey-600)">
       Выберите рейс <span style="color: var(--color-purple-blue)">вылета</span>
     </p>

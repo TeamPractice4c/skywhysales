@@ -1,6 +1,6 @@
 <script setup>
-import { computed, onBeforeMount, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onBeforeMount, onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
@@ -11,14 +11,18 @@ import useTicketStore from '@/stores/ticket.js'
 const flightStore = useFlightStore()
 const ticketStore = useTicketStore()
 const userStore = useUserStore()
+const router = useRouter()
 const route = useRoute()
 const toast = useToast()
 
 const flightId = Number(route.params.id)
 const selectedClass = ref('Эконом')
 
+const gottenFlight = ref(null)
+
 onBeforeMount(async () => {
-  await flightStore.getFlight(flightId)
+  gottenFlight.value = await flightStore.getFlight(flightId)
+
   if (flightStore.flightError) {
     toast.error(flightStore.flightError)
   }
@@ -55,7 +59,7 @@ const tariffRules = {
 }
 
 const currentTariff = computed(() => tariffRules[selectedClass.value])
-const flight = computed(() => flightStore.currentFlight)
+const flight = computed(() => gottenFlight.value)
 const finalPrice = computed(() => {
   if (!flight.value) return 0
   const basePrice = flight.value.fPrice
@@ -97,11 +101,12 @@ const buyTicket = async () => {
     return
   }
   toast.success('Билет успешно оформлен!')
+  router.back()
 }
 </script>
 
 <template>
-  <div class="flight-detail-page">
+  <div class="flight-detail-page" v-if="flight">
     <div class="class-selector">
       <h3>Класс обслуживания</h3>
       <div class="class-options">
@@ -146,29 +151,29 @@ const buyTicket = async () => {
       <div class="segment">
         <div class="segment-header">
           <div class="airline">
-            <span class="logo">{{ flightStore.currentFlight.fAirline }}</span>
+            <span class="logo">{{ flight.fAirline }}</span>
             <span class="duration">{{ duration }}</span>
           </div>
         </div>
 
         <div class="timeline">
           <div class="point">
-            <div class="time">{{ formatTime(flightStore.currentFlight.fDepartureTime) }}</div>
-            <div class="airport">{{ flightStore.currentFlight.fDepartureAirport }}</div>
+            <div class="time">{{ formatTime(flight.fDepartureTime) }}</div>
+            <div class="airport">{{ flight.fDepartureAirport }}</div>
             <div class="date">
-              {{ formatDate(flightStore.currentFlight.fDepartureTime) }},
-              {{ formatDay(flightStore.currentFlight.fDepartureTime) }}
+              {{ formatDate(flight.fDepartureTime) }},
+              {{ formatDay(flight.fDepartureTime) }}
             </div>
           </div>
           <div class="line">
             <div class="dot"></div>
           </div>
           <div class="point text-right">
-            <div class="time">{{ formatTime(flightStore.currentFlight.fArrivalTime) }}</div>
-            <div class="airport">{{ flightStore.currentFlight.fArrivalAirport }}</div>
+            <div class="time">{{ formatTime(flight.fArrivalTime) }}</div>
+            <div class="airport">{{ flight.fArrivalAirport }}</div>
             <div class="date">
-              {{ formatDate(flightStore.currentFlight.fArrivalTime) }},
-              {{ formatDay(flightStore.currentFlight.fArrivalTime) }}
+              {{ formatDate(flight.fArrivalTime) }},
+              {{ formatDay(flight.fArrivalTime) }}
             </div>
           </div>
         </div>
