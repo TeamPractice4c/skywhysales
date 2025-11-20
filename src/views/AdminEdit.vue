@@ -21,6 +21,7 @@ const isNew = computed(() => id.value === 'new')
 const form = ref({})
 const loading = ref(false)
 
+// Конфигурация полей — теперь с правильными ключами из бэкенда
 const fieldsConfig = {
   flight: [
     { key: 'fDepartureAirport', label: 'Аэропорт отправления', type: 'text' },
@@ -46,6 +47,7 @@ const fieldsConfig = {
 
 const fields = computed(() => fieldsConfig[entity.value] || [])
 
+// Загрузка данных при редактировании
 const loadEntity = async () => {
   if (isNew.value) {
     form.value = {}
@@ -54,94 +56,127 @@ const loadEntity = async () => {
 
   loading.value = true
   try {
-    let data
-    switch (entity.value) {
-      case 'flight':
-        data = await flightStore.getFlightById(id.value)
-        break
-      case 'airline':
-        data = await airlineStore.getAirlineById(id.value)
-        break
-      case 'airport':
-        data = await airportStore.getAirportById(id.value)
-        break
-      default:
-        toast.error('Неизвестная сущность')
-        router.back()
-        return
+    let data = null
+
+    if (entity.value === 'flight') {
+      data = await flightStore.getFlight(id.value)
+      if (data) {
+        // Приводим дату к формату datetime-local
+        data.fDepartureTime = data.fDepartureTime.slice(0, 16)
+        data.fArrivalTime = data.fArrivalTime.split('T')[1]?.slice(0, 5) || '12:00'
+      }
+    } else if (entity.value === 'airline') {
+      await airlineStore.getAirline(id.value)
+      data = airlineStore.currentAirline
+    } else if (entity.value === 'airport') {
+      await airportStore.getAirport(id.value)
+      data = airportStore.currentAirport
     }
 
     if (!data) {
       toast.error('Объект не найден')
-      router.back()
+      router.push('/admin')
       return
     }
 
     form.value = { ...data }
   } catch (err) {
-    toast.error('Ошибка загрузки данных')
+    toast.error('Ошибка загрузки')
     console.error(err)
   } finally {
     loading.value = false
   }
 }
 
+// Сохранение
 const save = async () => {
   if (loading.value) return
   loading.value = true
 
   try {
     let success = false
-    switch (entity.value) {
-      case 'flight':
-        if (isNew.value) {
-          success = await flightStore.createFlight(form.value)
-        } else {
-          success = await flightStore.updateFlight(id.value, form.value)
-        }
-        break
-      case 'airline':
-        if (isNew.value) {
-          success = await airlineStore.createAirline(form.value)
-        } else {
-          success = await airlineStore.updateAirline(id.value, form.value)
-        }
-        break
-      case 'airport':
-        if (isNew.value) {
-          success = await airportStore.createAirport(form.value)
-        } else {
-          success = await airportStore.updateAirport(id.value, form.value)
-        }
-        break
+
+    if (entity.value === 'flight') {
+      const flightData = {
+        ...form.value,
+        fId: isNew.value ? 0 : form.value.fId,
+        fPrice: Number(form.value.fPrice),
+        fSeatsCount: Number(form.value.fSeatsCount),
+      }
+
+      if (isNew.value) {
+        await flightStore.addFlight(flightData)
+        success = true
+      } else {
+        await flightStore.editFlight(flightData)
+        success = true
+      }
+    }
+
+    else if (entity.value === 'airline') {
+      const airlineData = {
+        alId: isNew.value ? 0 : form.value.alId,
+        alName: form.value.alName,
+        alEmail: form.value.alEmail,
+      }
+
+      if (isNew.value) {
+        await airlineStore.addAirline(airlineData)
+        success = true
+      } else {
+        await airlineStore.editAirline(airlineData)
+        success = true
+      }
+    }
+
+    else if (entity.value === 'airport') {
+      const airportData = {
+        apId: isNew.value ? 0 : form.value.apId,
+        apName: form.value.apName,
+        apCountry: form.value.apCountry,
+        apCity: form.value.apCity,
+        apStreet: form.value.apStreet,
+        apBuilding: form.value.apBuilding,
+      }
+
+      if (isNew.value) {
+        await airportStore.addAirport(airportData)
+        success = true
+      } else {
+        await airportStore.editAirport(airportData)
+        success = true
+      }
     }
 
     if (success) {
-      toast.success(isNew.value ? 'Создано успешно!' : 'Обновлено успешно!')
-      router.back()
-    } else {
-      toast.error('Ошибка при сохранении')
+      toast.success(isNew.value ? 'Успешно создано!' : 'Успешно обновлено!')
+      await router.push('/admin') // или router.push('/admin')
     }
   } catch (err) {
-    toast.error('Ошибка сервера')
-    console.error(err)
+    toast.error(flightStore.flightError || airlineStore.airlineError || airportStore.airportError || 'Ошибка сохранения')
   } finally {
     loading.value = false
   }
 }
 
 onMounted(() => {
-  if (!fieldsConfig[entity.value]) {
-    toast.error('Неподдерживаемая сущность')
-    router.back()
+  if (!['flight', 'airline', 'airport'].includes(entity.value)) {
+    toast.error('Недопустимая сущность')
+    router.push('/admin')
     return
   }
   loadEntity()
 })
 
-watch([entity, id], () => {
-  loadEntity()
-})
+watch(
+  () => route.params.entity,
+  (newEntity) => {
+    if (!['flight', 'airline', 'airport'].includes(newEntity)) {
+      router.push('/admin')
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -151,16 +186,12 @@ watch([entity, id], () => {
         <h2>
           {{ isNew ? 'Добавление' : 'Редактирование' }}
           {{
-            entity === 'flight'
-              ? 'рейса'
-              : entity === 'airline'
-                ? 'авиакомпании'
-                : entity === 'airport'
-                  ? 'аэропорта'
-                  : ''
+            entity === 'flight' ? 'рейса' :
+              entity === 'airline' ? 'авиакомпании' :
+                entity === 'airport' ? 'аэропорта' : ''
           }}
         </h2>
-        <button @click="router.back()" class="back-btn">Назад</button>
+        <button @click="router.push('/admin')" class="back-btn">Назад</button>
       </div>
 
       <form @submit.prevent="save" class="edit-form" v-if="fields.length">
@@ -170,8 +201,8 @@ watch([entity, id], () => {
             <input
               :id="field.key"
               :type="field.type"
-              :step="field.step"
-              v-model="form.value[field.key]"
+              :step="field.step || undefined"
+              v-model="form[field.key]"
               required
               :disabled="loading"
             />
@@ -179,14 +210,16 @@ watch([entity, id], () => {
         </div>
 
         <div class="form-actions">
-          <button type="button" @click="router.back()" :disabled="loading">Отмена</button>
+          <button type="button" @click="router.push('/admin')" :disabled="loading">Отмена</button>
           <button type="submit" class="primary" :disabled="loading">
             {{ loading ? 'Сохранение...' : 'Сохранить' }}
           </button>
         </div>
       </form>
 
-      <div v-else class="loading">Загрузка...</div>
+      <div v-else class="loading">
+        {{ loading ? 'Загрузка...' : 'Неизвестная сущность' }}
+      </div>
     </div>
   </div>
 </template>
@@ -244,6 +277,10 @@ watch([entity, id], () => {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
   margin-bottom: 32px;
+}
+
+.form-group {
+  padding: 0px 10px;
 }
 
 .form-group label {
