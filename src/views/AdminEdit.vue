@@ -26,7 +26,7 @@ const fieldsConfig = {
     { key: 'fDepartureAirport', label: 'Аэропорт отправления', type: 'text' },
     { key: 'fArrivalAirport', label: 'Аэропорт прибытия', type: 'text' },
     { key: 'fDepartureTime', label: 'Дата и время вылета', type: 'datetime-local' },
-    { key: 'fArrivalTime', label: 'Время прилёта', type: 'time' },
+    { key: 'fArrivalTime', label: 'Время прилёта', type: 'datetime-local' },
     { key: 'fAirline', label: 'Авиакомпания (название)', type: 'text' },
     { key: 'fPrice', label: 'Цена (₽)', type: 'number', step: '100' },
     { key: 'fSeatsCount', label: 'Количество мест', type: 'number' },
@@ -61,7 +61,7 @@ const loadEntity = async () => {
       if (data) {
         // Приводим дату к формату datetime-local
         data.fDepartureTime = data.fDepartureTime.slice(0, 16)
-        data.fArrivalTime = data.fArrivalTime.split('T')[1]?.slice(0, 5) || '12:00'
+        data.fArrivalTime = data.fArrivalTime.slice(0, 16)
       }
     } else if (entity.value === 'airline') {
       await airlineStore.getAirline(id.value)
