@@ -67,8 +67,8 @@ const useFlightStore = defineStore('flights', () => {
         fAirline: flight.airline,
         fDepartureAirport: flight.fDepartureAirport,
         fArrivalAirport: flight.fArrivalAirport,
-        fDepartureTime: flight.fDepartureTime,
-        fArrivalTime: flight.fArrivalTime,
+        fDepartureTime: moment(new Date(flight.fDepartureTime)).add(5, 'h').toDate(),
+        fArrivalTime: moment(new Date(flight.fArrivalTime)).add(5, 'h').toDate(),
         fSeatsCount: flight.fSeatsCount,
         fPrice: flight.fPrice,
       })
@@ -84,6 +84,8 @@ const useFlightStore = defineStore('flights', () => {
   }
 
   const editFlight = async (flight) => {
+    flight.fDepartureTime = moment(new Date(flight.fDepartureTime)).add(5, 'h').toDate()
+    flight.fArrivalTime = moment(new Date(flight.fArrivalTime)).add(5, 'h').toDate()
     await axios
       .post(`http://localhost:3000/api/flight/EditFlight`, flight)
       .then((res) => {
