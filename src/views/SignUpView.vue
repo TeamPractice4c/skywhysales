@@ -111,37 +111,75 @@ const signUp = async () => {
 
 <template>
   <div class="sign-up">
-    <h3>Регистрация</h3>
-    <input type="text" required placeholder="Введите фамилию" ref="surname-input" />
-    <input type="text" required placeholder="Введите имя" ref="name-input" />
-    <input type="text" placeholder="Введите отчество" ref="patronymic-input" />
-    <input type="text" required placeholder="Введите email" ref="login-input" />
-    <input type="password" required placeholder="Введите пароль" ref="password-input" />
-    <input type="text" required placeholder="Введите телефон" ref="phone-input" />
-    <date-picker
-      v-model="selectedDate"
-      class="datepicker"
-      :time-config="{ enableTimePicker: false }"
-      :maxDate="Date.now()"
-      :locale="ru"
-      placeholder="Введите дату рождения"
-    />
-    <input
-      type="text"
-      minlength="4"
-      maxlength="4"
-      required
-      placeholder="Введите серию паспорта"
-      ref="serial-input"
-    />
-    <input
-      type="text"
-      minlength="6"
-      maxlength="6"
-      required
-      placeholder="Введите номер паспорта"
-      ref="number-input"
-    />
+    <div>
+      <h3>Регистрация</h3>
+    </div>
+    <div class="input-wrapper">
+      <input type="text" required placeholder="Введите фамилию" ref="surname-input" />
+      <span class="required-indicator">*</span>
+    </div>
+
+    <div class="input-wrapper">
+      <input type="text" required placeholder="Введите имя" ref="name-input" />
+      <span class="required-indicator">*</span>
+    </div>
+
+    <div class="input-wrapper">
+      <input type="text" placeholder="Введите отчество" ref="patronymic-input" />
+      <!-- Отчество не обязательно — без * -->
+    </div>
+
+    <div class="input-wrapper">
+      <input type="text" required placeholder="Введите email" ref="login-input" />
+      <span class="required-indicator">*</span>
+    </div>
+
+    <div class="input-wrapper">
+      <input type="password" required placeholder="Введите пароль" ref="password-input" />
+      <span class="required-indicator">*</span>
+    </div>
+
+    <div class="input-wrapper">
+      <input type="text" required placeholder="Введите телефон" ref="phone-input" />
+      <span class="required-indicator">*</span>
+    </div>
+
+    <div class="input-wrapper datepicker-wrapper">
+      <date-picker
+        v-model="selectedDate"
+        class="datepicker"
+        :time-config="{ enableTimePicker: false }"
+        :maxDate="Date.now()"
+        :locale="ru"
+        placeholder="Введите дату рождения"
+      />
+      <span class="required-indicator">*</span>
+    </div>
+
+    <div class="input-wrapper">
+      <input
+        type="text"
+        minlength="4"
+        maxlength="4"
+        required
+        placeholder="Введите серию паспорта"
+        ref="serial-input"
+      />
+      <span class="required-indicator">*</span>
+    </div>
+
+    <div class="input-wrapper">
+      <input
+        type="text"
+        minlength="6"
+        maxlength="6"
+        required
+        placeholder="Введите номер паспорта"
+        ref="number-input"
+      />
+      <span class="required-indicator">*</span>
+    </div>
+    <p class="required-hint"><span style="color: #e74c3c">*</span> — обязательные поля</p>
     <div class="actions">
       <button type="button" class="btn" @click="signUp">Зарегистрироваться</button>
     </div>
@@ -204,5 +242,28 @@ svg:hover {
 .actions {
   display: flex;
   flex-direction: column;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 35vw;
+}
+
+.input-wrapper input,
+.input-wrapper .datepicker {
+  width: 100%;
+  padding-right: 30px; /* место под звёздочку */
+}
+
+.required-indicator {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #e74c3c;
+  font-size: 18px;
+  font-weight: bold;
+  pointer-events: none;
+  user-select: none;
 }
 </style>
